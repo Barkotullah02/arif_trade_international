@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ATI REST API Reference</title>
+<style>
+/* ── Reset & Base ─────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:14px;
+     background:#f0f2f5;color:#212529;display:flex;min-height:100vh}
+
+/* ── Sidebar ──────────────────────────────────────────── */
+#sidebar{width:260px;min-width:260px;background:#0f172a;color:#cbd5e1;
+         position:fixed;top:0;left:0;height:100vh;overflow-y:auto;
+         display:flex;flex-direction:column;z-index:100}
+#sidebar-header{padding:20px 18px 14px;border-bottom:1px solid #1e293b}
+#sidebar-header h1{font-size:15px;font-weight:700;color:#f1f5f9;letter-spacing:.3px}
+#sidebar-header p{font-size:11px;color:#64748b;margin-top:3px}
+#api-base-display{font-size:10px;color:#3b82f6;word-break:break-all;margin-top:4px}
+
+#token-section{padding:12px 18px;border-bottom:1px solid #1e293b}
+#token-section label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+#global-token{width:100%;padding:6px 8px;background:#1e293b;border:1px solid #334155;
+              border-radius:5px;color:#f1f5f9;font-size:11px;font-family:monospace}
+#global-token:focus{outline:none;border-color:#3b82f6}
+.token-hint{font-size:10px;color:#475569;margin-top:3px}
+
+#nav-search{padding:10px 18px;border-bottom:1px solid #1e293b}
+#nav-search input{width:100%;padding:6px 8px;background:#1e293b;border:1px solid #334155;
+                  border-radius:5px;color:#f1f5f9;font-size:12px}
+#nav-search input:focus{outline:none;border-color:#3b82f6}
+
+#nav-links{flex:1;padding:8px 0}
+.nav-group{margin-bottom:2px}
+.nav-group-title{padding:7px 18px;font-size:11px;font-weight:600;color:#475569;
+                 text-transform:uppercase;letter-spacing:.8px;cursor:pointer;
+                 display:flex;justify-content:space-between;align-items:center}
+.nav-group-title:hover{color:#94a3b8}
+.nav-group-links{display:flex;flex-direction:column}
+.nav-link{display:flex;align-items:center;gap:7px;padding:5px 18px 5px 24px;
+          color:#94a3b8;text-decoration:none;font-size:12px;cursor:pointer;
+          border-left:2px solid transparent;transition:all .15s}
+.nav-link:hover{color:#e2e8f0;background:#1e293b;border-left-color:#3b82f6}
+.nav-link.active{color:#f1f5f9;border-left-color:#3b82f6;background:#1e293b}
+.nav-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;
+           letter-spacing:.4px;flex-shrink:0}
+
+#sidebar-footer{padding:14px 18px;border-top:1px solid #1e293b}
+#print-btn{width:100%;padding:9px;background:#1d4ed8;color:#fff;border:none;
+           border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;
+           transition:background .15s}
+#print-btn:hover{background:#2563eb}
+#print-btn:active{background:#1e40af}
+#expand-all-btn{width:100%;padding:7px;background:#1e293b;color:#94a3b8;border:1px solid #334155;
+                border-radius:6px;font-size:12px;cursor:pointer;margin-top:7px;transition:all .15s}
+#expand-all-btn:hover{background:#334155;color:#e2e8f0}
+
+/* ── Main Content ─────────────────────────────────────── */
+#main{margin-left:260px;flex:1;padding:28px 32px;max-width:1100px}
+#main-header{margin-bottom:28px}
+#main-header h2{font-size:24px;font-weight:700;color:#0f172a}
+#main-header p{color:#64748b;margin-top:6px;font-size:13px}
+
+.group-section{margin-bottom:36px}
+.group-title{font-size:17px;font-weight:700;color:#0f172a;padding-bottom:10px;
+             border-bottom:2px solid #e2e8f0;margin-bottom:14px;
+             display:flex;align-items:center;gap:10px}
+.group-count{font-size:12px;font-weight:500;color:#64748b;background:#e2e8f0;
+             padding:2px 8px;border-radius:10px}
+
+/* ── Endpoint Card ────────────────────────────────────── */
+.endpoint{background:#fff;border:1px solid #e2e8f0;border-radius:8px;
+          margin-bottom:10px;overflow:hidden;transition:box-shadow .15s}
+.endpoint:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.endpoint-header{display:flex;align-items:center;gap:12px;padding:13px 18px;
+                 cursor:pointer;user-select:none}
+.endpoint-header:hover{background:#f8fafc}
+.method-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:5px;
+              letter-spacing:.6px;min-width:70px;text-align:center;flex-shrink:0}
+.GET   {background:#dcfce7;color:#15803d}
+.POST  {background:#dbeafe;color:#1d4ed8}
+.PUT   {background:#fef3c7;color:#b45309}
+.DELETE{background:#fee2e2;color:#dc2626}
+.PATCH {background:#f3e8ff;color:#7c3aed}
+
+.endpoint-path{font-family:monospace;font-size:14px;font-weight:600;color:#1e293b;flex:1}
+.endpoint-summary{font-size:12px;color:#64748b;margin-left:4px}
+.endpoint-collapse-icon{color:#94a3b8;font-size:16px;transition:transform .2s;flex-shrink:0}
+.endpoint.open .endpoint-collapse-icon{transform:rotate(180deg)}
+
+.auth-chip{font-size:10px;padding:2px 7px;border-radius:10px;flex-shrink:0;font-weight:500}
+.auth-chip.public-chip{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.auth-chip.token-chip {background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe}
+
+/* ── Endpoint Body (collapsed by default) ─────────────── */
+.endpoint-body{display:none;border-top:1px solid #f1f5f9;padding:16px 20px}
+.endpoint.open .endpoint-body{display:block}
+
+.info-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.detail-text{font-size:12.5px;color:#475569;line-height:1.6;background:#f8fafc;
+             padding:9px 12px;border-radius:6px;border-left:3px solid #3b82f6;margin-bottom:14px}
+
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
+               color:#94a3b8;margin-bottom:6px}
+
+/* Roles */
+.role-chip{font-size:11px;padding:2px 8px;border-radius:10px;background:#f1f5f9;
+           color:#475569;border:1px solid #e2e8f0}
+
+/* Params table */
+.param-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:14px}
+.param-table th{background:#f8fafc;padding:6px 10px;text-align:left;font-weight:600;
+                color:#475569;border-bottom:1px solid #e2e8f0;font-size:11px}
+.param-table td{padding:7px 10px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+.param-table tr:last-child td{border-bottom:none}
+.param-name{font-family:monospace;font-weight:600;color:#1d4ed8}
+.param-type{font-family:monospace;font-size:11px;color:#7c3aed;background:#f5f3ff;
+            padding:1px 5px;border-radius:3px}
+.required-star{color:#dc2626;font-weight:700}
+.optional-dim{color:#94a3b8;font-size:11px}
+.param-desc{color:#475569}
+
+/* Code blocks */
+.code-block{background:#0f172a;color:#e2e8f0;padding:12px 14px;border-radius:6px;
+            font-family:'Consolas','Monaco',monospace;font-size:12px;
+            overflow-x:auto;white-space:pre;margin-bottom:14px;position:relative}
+.code-block.resp{background:#0d1117}
+.copy-btn{position:absolute;top:8px;right:8px;padding:3px 8px;background:#1e293b;
+          color:#94a3b8;border:1px solid #334155;border-radius:4px;font-size:10px;
+          cursor:pointer;transition:all .15s}
+.copy-btn:hover{background:#334155;color:#e2e8f0}
+
+/* ── Try-It Panel ─────────────────────────────────────── */
+.try-it-toggle{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+               color:#3b82f6;cursor:pointer;padding:4px 0 8px;user-select:none}
+.try-it-toggle:hover{color:#2563eb}
+.try-it-panel{background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;
+              padding:16px;display:none}
+.try-it-panel.open{display:block}
+
+.try-row{margin-bottom:10px}
+.try-row label{display:block;font-size:11px;font-weight:600;color:#475569;margin-bottom:4px}
+.try-row input,.try-row select,.try-row textarea{
+  width:100%;padding:7px 10px;border:1px solid #e2e8f0;border-radius:6px;
+  font-size:12.5px;font-family:monospace;background:#fff;color:#1e293b;
+  transition:border .15s}
+.try-row input:focus,.try-row textarea:focus{outline:none;border-color:#3b82f6}
+.try-row textarea{min-height:90px;resize:vertical}
+
+.url-preview{font-family:monospace;font-size:12px;color:#475569;background:#e2e8f0;
+             padding:7px 10px;border-radius:5px;word-break:break-all;margin-bottom:10px}
+
+.send-btn{padding:8px 20px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;
+          font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+.send-btn:hover{background:#2563eb}
+.send-btn:disabled{background:#94a3b8;cursor:not-allowed}
+
+.try-response{margin-top:12px}
+.try-response .res-meta{font-size:11px;color:#64748b;margin-bottom:6px;display:flex;gap:12px}
+.status-ok {color:#15803d;font-weight:700}
+.status-err{color:#dc2626;font-weight:700}
+.res-time{color:#64748b}
+.try-response pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:6px;
+                  font-size:12px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;
+                  max-height:320px;overflow-y:auto}
+
+/* ── Inline section dividers ──────────────────────────── */
+.subsection{margin-bottom:14px}
+
+/* ── Loading / Error States ───────────────────────────── */
+#loading{display:flex;align-items:center;justify-content:center;height:300px;
+         flex-direction:column;gap:12px;color:#64748b}
+.spinner{width:32px;height:32px;border:3px solid #e2e8f0;border-top-color:#3b82f6;
+         border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#error-box{background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:16px;
+           border-radius:8px;margin:20px 0;font-size:13px}
+
+/* ── Print Styles ─────────────────────────────────────── */
+@media print{
+  body{background:#fff;display:block}
+  #sidebar{display:none!important}
+  #main{margin-left:0!important;padding:0!important;max-width:100%!important}
+  #main-header h2{font-size:20px}
+  .endpoint{break-inside:avoid;margin-bottom:12px;border:1px solid #ccc;box-shadow:none}
+  .endpoint-body{display:block!important}
+  .endpoint-collapse-icon{display:none}
+  .try-it-toggle,.try-it-panel,.send-btn,.copy-btn{display:none!important}
+  .code-block{background:#f5f5f5!important;color:#000!important;border:1px solid #ccc}
+  .group-section{break-before:auto}
+  @page{margin:15mm}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ Sidebar ═══════════════════════════════════════════ -->
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <h1>🏢 ATI REST API</h1>
+    <p id="api-version">Loading…</p>
+    <div id="api-base-display"></div>
+  </div>
+
+  <div id="token-section">
+    <label for="global-token">Bearer Token (JWT)</label>
+    <input id="global-token" type="text" placeholder="Paste your token here…" autocomplete="off"/>
+    <div class="token-hint">Applied to all "Try It" requests</div>
+  </div>
+
+  <div id="nav-search">
+    <input type="text" id="nav-filter" placeholder="🔍  Filter endpoints…"/>
+  </div>
+
+  <div id="nav-links"></div>
+
+  <div id="sidebar-footer">
+    <button id="print-btn" onclick="window.print()">🖨 Print All Endpoints</button>
+    <button id="expand-all-btn" onclick="toggleAll()">⊞ Expand All</button>
+  </div>
+</nav>
+
+<!-- ══ Main Content ═══════════════════════════════════════ -->
+<main id="main">
+  <div id="main-header">
+    <h2 id="page-title">ATI API Reference</h2>
+    <p id="page-subtitle">Fetching endpoint definitions…</p>
+  </div>
+  <div id="content">
+    <div id="loading"><div class="spinner"></div><span>Loading API spec…</span></div>
+  </div>
+</main>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  ATI API Reference – auto-discovery explorer
+// ══════════════════════════════════════════════════════════
+
+const BASE_URL = (() => {
+  const p = window.location.pathname;
+  // strip /docs/ or /docs/index.html from path
+  const stripped = p.replace(/\/docs\/?.*$/, '');
+  return window.location.origin + stripped;
+})();
+
+const METHOD_COLORS = {GET:'GET',POST:'POST',PUT:'PUT',DELETE:'DELETE',PATCH:'PATCH'};
+
+let specData       = null;
+let allExpanded    = false;
+
+// ── Fetch spec from API ────────────────────────────────────
+async function loadSpec() {
+  try {
+    const resp = await fetch(`${BASE_URL}/spec`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const json = await resp.json();
+    if (!json.success) throw new Error(json.message || 'Spec fetch failed');
+    specData = json.data;
+    render(specData);
+  } catch (e) {
+    document.getElementById('loading').remove();
+    document.getElementById('content').innerHTML =
+      `<div id="error-box">
+        <strong>Could not load API spec.</strong><br/>
+        <small>${e.message}</small><br/><br/>
+        Make sure XAMPP is running and the API is accessible at:<br/>
+        <code>${BASE_URL}/docs</code>
+      </div>`;
+  }
+}
+
+// ── Render everything ──────────────────────────────────────
+function render(spec) {
+  document.getElementById('api-version').textContent = `${spec.app}  v${spec.version}`;
+  document.getElementById('api-base-display').textContent = spec.base_url;
+  document.getElementById('page-title').textContent  = spec.app + ' — API Reference';
+  document.getElementById('page-subtitle').textContent =
+    `Base URL: ${spec.base_url} · JWT HS256 auth · ${spec.version}`;
+
+  const content  = document.getElementById('content');
+  const navLinks = document.getElementById('nav-links');
+  content.innerHTML  = '';
+  navLinks.innerHTML = '';
+
+  const groups = spec.groups;
+  let endpointIdx = 0;
+
+  Object.entries(groups).forEach(([groupName, endpoints]) => {
+    const groupId  = 'group-' + groupName.replace(/[^a-zA-Z0-9]/g, '-');
+
+    // ── Sidebar nav entry ──────────────────────────────────
+    const navGroup = document.createElement('div');
+    navGroup.className = 'nav-group';
+    navGroup.innerHTML = `
+      <div class="nav-group-title">${groupName}
+        <span class="group-count">${endpoints.length}</span>
+      </div>
+      <div class="nav-group-links">
+        ${endpoints.map(ep => `
+          <a class="nav-link" data-idx="${endpointIdx++}" onclick="scrollToEndpoint(this)" href="#">
+            <span class="nav-badge ${ep.method}">${ep.method}</span>
+            <span style="font-family:monospace;font-size:11px">${ep.path}</span>
+          </a>
+        `).join('')}
+      </div>`;
+    navLinks.appendChild(navGroup);
+
+    // ── Group section ──────────────────────────────────────
+    const section = document.createElement('section');
+    section.className = 'group-section';
+    section.id = groupId;
+    section.innerHTML = `
+      <div class="group-title">
+        ${groupName}
+        <span class="group-count">${endpoints.length} endpoint${endpoints.length !== 1 ? 's' : ''}</span>
+      </div>`;
+
+    endpoints.forEach((ep, i) => {
+      const card = buildEndpointCard(ep, groupId + '-ep-' + i);
+      section.appendChild(card);
+    });
+
+    content.appendChild(section);
+  });
+
+  // Nav filter
+  document.getElementById('nav-filter').addEventListener('input', filterNav);
+}
+
+// ── Build one endpoint card ────────────────────────────────
+function buildEndpointCard(ep, cardId) {
+  const card = document.createElement('div');
+  card.className = 'endpoint';
+  card.id = cardId;
+
+  const authChip = ep.auth
+    ? `<span class="auth-chip token-chip">🔒 Token required</span>`
+    : `<span class="auth-chip public-chip">🌐 Public</span>`;
+
+  const rolesHtml = ep.roles && ep.roles.length
+    ? `<div class="subsection">
+         <div class="section-label">Allowed Roles</div>
+         <div class="info-row">${ep.roles.map(r=>`<span class="role-chip">${r}</span>`).join('')}</div>
+       </div>`
+    : '';
+
+  const detailHtml = ep.detail
+    ? `<div class="detail-text">${escHtml(ep.detail)}</div>` : '';
+
+  const queryHtml = ep.query && ep.query.length
+    ? `<div class="subsection">
+         <div class="section-label">Query Parameters</div>
+         <table class="param-table">
+           <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+           <tbody>
+             ${ep.query.map(q=>`<tr>
+               <td><span class="param-name">?${q.param}</span></td>
+               <td><span class="param-type">${q.type}</span></td>
+               <td class="param-desc">${escHtml(q.description||'')}</td>
+             </tr>`).join('')}
+           </tbody>
+         </table>
+       </div>` : '';
+
+  const bodyFieldsHtml = ep.body && ep.body.length
+    ? `<div class="subsection">
+         <div class="section-label">Request Body Fields</div>
+         <table class="param-table">
+           <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+           <tbody>
+             ${ep.body.map(f=>`<tr>
+               <td><span class="param-name">${f.field}</span></td>
+               <td><span class="param-type">${f.type}</span></td>
+               <td>${f.required
+                     ? '<span class="required-star">✓ Required</span>'
+                     : '<span class="optional-dim">optional</span>'}</td>
+               <td class="param-desc">${escHtml(f.description||'')}</td>
+             </tr>`).join('')}
+           </tbody>
+         </table>
+       </div>` : '';
+
+  const bodyExHtml = ep.body_ex
+    ? `<div class="subsection">
+         <div class="section-label">Request Body Example</div>
+         <div class="code-block" style="margin-bottom:8px">
+           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+           <code>${escHtml(JSON.stringify(ep.body_ex, null, 2))}</code>
+         </div>
+       </div>` : '';
+
+  const respExHtml = ep.resp_ex
+    ? `<div class="subsection">
+         <div class="section-label">Response Example</div>
+         <div class="code-block resp">
+           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+           <code>${escHtml(JSON.stringify(ep.resp_ex, null, 2))}</code>
+         </div>
+       </div>` : 
+       `<div class="subsection">
+         <div class="section-label">Response</div>
+         <div style="font-size:12px;color:#64748b">204 No Content on success</div>
+        </div>`;
+
+  const tryItHtml = buildTryIt(ep, cardId);
+
+  card.innerHTML = `
+    <div class="endpoint-header" onclick="toggleEndpoint('${cardId}')">
+      <span class="method-badge ${ep.method}">${ep.method}</span>
+      <span class="endpoint-path">${escHtml(ep.path)}</span>
+      <span class="endpoint-summary">${escHtml(ep.summary||'')}</span>
+      ${authChip}
+      <span class="endpoint-collapse-icon">▾</span>
+    </div>
+    <div class="endpoint-body">
+      ${detailHtml}
+      ${rolesHtml}
+      ${queryHtml}
+      ${bodyFieldsHtml}
+      ${bodyExHtml}
+      ${respExHtml}
+      ${tryItHtml}
+    </div>`;
+
+  return card;
+}
+
+// ── Build Try-It panel ─────────────────────────────────────
+function buildTryIt(ep, cardId) {
+  const panelId = cardId + '-try';
+
+  // Extract {param} placeholders from path
+  const pathParams = [...ep.path.matchAll(/\{(\w+)\}/g)].map(m => m[1]);
+
+  const pathInputs = pathParams.map(p => `
+    <div class="try-row">
+      <label>Path param: <code>{${p}}</code></label>
+      <input type="text" class="path-param" data-param="${p}" placeholder="Enter ${p}…"/>
+    </div>`).join('');
+
+  const queryInputs = ep.query && ep.query.length
+    ? `<div style="margin-bottom:10px">
+        <div class="section-label" style="margin-bottom:6px">Query Parameters</div>
+        ${ep.query.map(q=>`
+          <div class="try-row">
+            <label>?${q.param} <span class="param-type">${q.type}</span></label>
+            <input type="text" class="query-param" data-param="${q.param}" placeholder="${escHtml(q.description||'')}"/>
+          </div>`).join('')}
+      </div>` : '';
+
+  const bodyInput = ep.body_ex
+    ? `<div class="try-row">
+         <label>Request Body (JSON)</label>
+         <textarea class="body-ta">${escHtml(JSON.stringify(ep.body_ex, null, 2))}</textarea>
+       </div>` : '';
+
+  const authRow = ep.auth
+    ? `<div class="try-row">
+         <label>Authorization Header</label>
+         <div style="font-size:11px;color:#64748b;font-family:monospace;background:#e2e8f0;
+                     padding:5px 8px;border-radius:4px">
+           Bearer &lt;token from sidebar&gt;
+         </div>
+       </div>` : '';
+
+  return `
+    <div class="try-it-toggle" onclick="toggleTryIt('${panelId}')">
+      ▶ Try It
+    </div>
+    <div class="try-it-panel" id="${panelId}" data-method="${ep.method}" data-path="${ep.path}">
+      <div class="url-preview" id="${panelId}-url">${BASE_URL}${ep.path}</div>
+      ${authRow}
+      ${pathInputs}
+      ${queryInputs}
+      ${bodyInput}
+      <button class="send-btn" onclick="sendRequest('${panelId}')">
+        ↗ Send ${ep.method} Request
+      </button>
+      <div class="try-response" id="${panelId}-resp" style="display:none"></div>
+    </div>`;
+}
+
+// ── Send request ───────────────────────────────────────────
+async function sendRequest(panelId) {
+  const panel  = document.getElementById(panelId);
+  const method = panel.dataset.method;
+  let   path   = panel.dataset.path;
+
+  // Replace path params
+  panel.querySelectorAll('.path-param').forEach(input => {
+    path = path.replace(`{${input.dataset.param}}`, encodeURIComponent(input.value || `{${input.dataset.param}}`));
+  });
+
+  // Build query string
+  const qps = [];
+  panel.querySelectorAll('.query-param').forEach(input => {
+    if (input.value.trim()) qps.push(`${input.dataset.param}=${encodeURIComponent(input.value.trim())}`);
+  });
+  const qs  = qps.length ? '?' + qps.join('&') : '';
+  const url = `${BASE_URL}${path}${qs}`;
+
+  // Update preview
+  document.getElementById(`${panelId}-url`).textContent = url;
+
+  const headers = {'Content-Type':'application/json','Accept':'application/json'};
+  const token   = document.getElementById('global-token').value.trim();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const bodyTA = panel.querySelector('.body-ta');
+  let   bodyStr = null;
+  if (bodyTA && bodyTA.value.trim()) {
+    try  { JSON.parse(bodyTA.value); bodyStr = bodyTA.value; }
+    catch { showTryResponse(panelId, null, 0, 0, 'Invalid JSON body'); return; }
+  }
+
+  const btn = panel.querySelector('.send-btn');
+  btn.disabled    = true;
+  btn.textContent = '…Sending';
+
+  const t0 = Date.now();
+  try {
+    const opts = { method, headers };
+    if (bodyStr && !['GET','HEAD'].includes(method)) opts.body = bodyStr;
+    const resp  = await fetch(url, opts);
+    const ms    = Date.now() - t0;
+    let   text  = await resp.text();
+    try   { text = JSON.stringify(JSON.parse(text), null, 2); } catch {}
+    showTryResponse(panelId, resp.status, resp.ok, ms, text);
+  } catch (e) {
+    showTryResponse(panelId, 0, false, Date.now() - t0, `Network error: ${e.message}`);
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = `↗ Send ${method} Request`;
+  }
+}
+
+function showTryResponse(panelId, status, ok, ms, body) {
+  const el = document.getElementById(`${panelId}-resp`);
+  el.style.display = 'block';
+  const statusCls  = status && ok ? 'status-ok' : 'status-err';
+  const statusTxt  = status ? `HTTP ${status}` : 'Error';
+  el.innerHTML     = `
+    <div class="res-meta">
+      <span class="${statusCls}">${statusTxt}</span>
+      <span class="res-time">⏱ ${ms}ms</span>
+    </div>
+    <pre>${escHtml(body)}</pre>`;
+}
+
+// ── UI helpers ─────────────────────────────────────────────
+function toggleEndpoint(cardId) {
+  document.getElementById(cardId).classList.toggle('open');
+}
+
+function toggleTryIt(panelId) {
+  document.getElementById(panelId).classList.toggle('open');
+}
+
+function toggleAll() {
+  allExpanded = !allExpanded;
+  document.querySelectorAll('.endpoint').forEach(c => c.classList.toggle('open', allExpanded));
+  document.getElementById('expand-all-btn').textContent =
+    allExpanded ? '⊟ Collapse All' : '⊞ Expand All';
+}
+
+function scrollToEndpoint(link) {
+  const cards = document.querySelectorAll('.endpoint');
+  const idx   = parseInt(link.dataset.idx);
+  if (cards[idx]) {
+    cards[idx].scrollIntoView({behavior:'smooth', block:'start'});
+    cards[idx].classList.add('open');
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+  }
+}
+
+function filterNav(e) {
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll('.nav-link').forEach(link => {
+    const txt = link.textContent.toLowerCase();
+    link.style.display = txt.includes(q) ? '' : 'none';
+  });
+  document.querySelectorAll('.endpoint').forEach(card => {
+    const txt = card.textContent.toLowerCase();
+    card.style.display = txt.includes(q) ? '' : 'none';
+  });
+  document.querySelectorAll('.group-section').forEach(sec => {
+    const visible = [...sec.querySelectorAll('.endpoint')].some(c => c.style.display !== 'none');
+    sec.style.display = visible ? '' : 'none';
+  });
+}
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ── Boot ───────────────────────────────────────────────────
+loadSpec();
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+Options -Indexes
+
+# Allow cross-origin requests (adjust origins in production)
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin  "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Authorization, Content-Type, Accept"
+</IfModule>
+
+# Absorb pre-flight OPTIONS requests before they hit PHP
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^ - [R=204,L]
+
+# Route every request (that is not a real file/directory) through index.php
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]

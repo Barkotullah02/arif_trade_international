@@ -1,0 +1,1555 @@
+Script started on Mon Mar  2 21:33:18 2026
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  php -l modules/auth/AuthController.php && php -l modules/categories/CategoryController.php &&  [Kpphp -l modules/units/UnitController.php && php -l modules/variantunits/VariantUnitController.php && php -l modules/payments/PaymentController. [Kpphp && php -l index.php && echo "ALL LINT OK"[?2004l
+No syntax errors detected in modules/auth/AuthController.php
+No syntax errors detected in modules/categories/CategoryController.php
+No syntax errors detected in modules/units/UnitController.php
+No syntax errors detected in modules/variantunits/VariantUnitController.php
+No syntax errors detected in modules/payments/PaymentController.php
+No syntax errors detected in index.php
+ALL LINT OK
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  python3 - <<'PY'[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hsscript = r"""#!/usr/bin/env bash[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hBBASE="http://localhost/arif_trade_international/restAPI"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hPPASS=0; FAIL=0; ERRORS=()[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hHH() { echo; echo "━━━ $1 ━━━"; }[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hccheck() {[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   local label="$1" method="$2" url="$3" data="$4" expect="$5"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   local args=(-s -o /tmp/ati_body -w "%{http_code}" -X "$method")[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   [[ -n "$TOKEN" ]] && args+=(-H "Authorization: Bearer $TOKEN")[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   args+=(-H "Content-Type: application/json")[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   [[ -n "$data" ]] && args+=(-d "$data")[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   local status; status=$(curl "${args[@]}" "$url")[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   local body;   body=$(cat /tmp/ati_body)[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   if [[ "$status" == "$expect" ]]; then[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     echo "  OK  [$status] $label"; PASS=$((PASS+1))[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   else[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     echo "  FAIL[$status vs $expect] $label"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     echo "       $(echo "$body" | python3 -c 'import sys; print(sys.stdin.read()[:180])' 2>/dev/null)"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     FAIL=$((FAIL+1)); ERRORS+=("$label [got $status want $expect]")[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BODY="$body"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODY" | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['id'])" 2>/dev/null; script = r"""#!/$LBA [KSSE="http://localhost/arif_trasyPASS=0; FAIL=0; ERRORS=()[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hHH() { echo; echo "━━━ $evH() { echo; echo "━━hecheck() {[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   local label="$1" method="$2" urch  local  /  local args=(-s -o /tmp/ati_body -w "%{http_code}" -X "$metal  [[ -n "$TOKEN" ]] && arg [Kss+=(-H "Authorization: Bearer $TOKEN")or  args+=(-H "Content-Type: application/json")[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   [[ -n "$data" ]or  [[ -n "$data" ]] && args+=(-d "$data")[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   l][  local status; status=$(curl "${args[@cq  local body;   body=$(cat /tmp/ati_body)[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   if [[in  if [[ "$status" == "$expect" ]]; then[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h::"    echo "  OK  [$status] $label"; PASma  else[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     echo "  FAIL[$status vs $expect] $labelwo    ex"    echo "       $(echo "$body" | python3 -th    FAIL=$((FAIL+1)); ERRORS+=("$lab [Keel [got $status want $expect]")[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BODY="$body"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h}}s"  fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BODY="$body"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODY" | pyth'{  eme}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODstusH() { echo; echo "━━━ $evH() { echo; echo "━━hecheck() {[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   local label="$1" method="$2" urch  local  /  local args=(-s -o /tmp/ati_body -w "%{http_code}" -X "$metal  [[ -n "$TOKE    local la [Kbbel="$1" method="$2" urch  local  /  local args=(-s -o 00  [[ -n "$data" ]or  [[ -n "$data" ]] && args+=(-d "$data")[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   l][  local status; status=$(curl "${args[@cq  local body;   body=$(cat /tmp/ati_body)[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   if [[in  if [[ "$status" == "$expect" ]]; then[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h::"    echo "  OK  [$gi  l][  local status; status=$(curl "${args[@cq  local bodyET  if [[in  if [[ "$status" == "$expect" ]]; then[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h::"    echo "  OK  [$status] $label"; or:"    echo "  OK  [$status] $label"; PASma  elsUC    echo "  FAIL[$status vs $expect] $labelwo [K   "   fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BODY="$body"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h}}s"  fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BODY="$body"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODY" | pyth'{  eme}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODstusH() { echo; echo "━━[7m<ffffffff>[27m   e "}s"  fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BOD00  expo "}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BOD"$BAgid() { echo "$LAST_BODstusH() { echo; }'  local label="$1" method="$2" urch  local  /  local args=(-s -o  [K//tmp/ati_body -w "%{http_co"   l][  local status; status=$(curl "${args[@cq  local body;   body=$(cat /tmp/ati_body)[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   if [[in  if [[ "$status" == "$expect" ]]; then[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h::"    echo "  OK  [$gi  l][  local status; status=$(curl "${args[@cq  local bodyET  if [[in  if [[ "$status" ==ch  if [[in  if [[ "$s [Kttatus" == "$expect" ]]; then[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h::"    echo "  OK  [$gi  l][  local st7.:"    echo "  OK  [$gi  l][  local status; stat" :"    echo "  OK  [$status] $label"; or:"     [Keecho "  OK  [$status] $label"; PASma  elsUC    echo "  FAIL[$status vs $expect] $labT   export LAST_BODY="$body"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h}}s"  fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BODY="$body"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODY" | pyth'{  eme}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODstusH() { ecIT}s"  fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BODVI  expos"}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODVID/gid() { echo "$LAST_BODstusH() { echo; D/  export LAST_BOD00  expo "}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BOD"$BAgid() { ect_gid() { echo "$LAST_BOD"$BAqu  if [[in  if [[ "$status" == "$expect" ]]; then[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h::"    echo "  OK  [$gi  l][  local status; status=$(curl "${args[@cq  local bodyET  if [[in  if [[ "$status" ==ch  if [[in  if [[ "$s [Kttatus" == "$expect" ]]; then[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h::"    echo "  OK  [$gi  l][  local stcu:"    echo "  OK  [$gi  l][  local status; statPO:"    echo "  OK  [$gi  l][  local st7.:"     [Keecho "  OK  [$gi  l][  local status; stat" :"    echo "  OK  [$status] $label"; or:"    echo "  OK  [$status] $labe  }s"  fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BODY="$body"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODY" | pyth'{  eme}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODstusH() { ecIT}s"  fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BODVI  expos"}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODVID/gid() { echo "$LAST_BODstusH() { echo; D/  export LAST_BOD00  exp0[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   expo"P}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODASE/gid() { echo "$LAST_BODstusH() { ecIT}sno  export LAST_BODVI  expos"}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "\"gid() { echo "$LAST_BODVID/01gid() { echo "$LAST_BOD"$BAgid() { ect_gid() { echo "$LAST_BOD"$BAqu  if [[in  if [[ "$s [Kttatus"  2:"    echo "  OK  [$gi  l][  local status; status=$(curl "${args[@cq  local bodyET  if [[in  if [[ "$status" ==ch  er:"    echo "  OK [K   [$gi  l][  local stcu:"    echo "  OK  [$gi  l][  local status; statPO:"    echo "  OK  [$gi  l][  local st7.:"    echo "  OK  [$gi  l][  lo [Kccano  export LAST_BODY="$body"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODY" | pyth'{  eme}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODstusH() { ecIT}s"  fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BODVI  expos"}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODVID/gid() { echo "$LAST_BODstusH() { echo; D/  export LAST_BOD00  exp0[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   expo"P}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { " }[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BOD /ingid() { echo "$LAST_BODstusH() { ecIT}sID  export LAST_BODVI  expos"}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "cegid() { echo "$LAST_BODVID/BA  expo"P}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODASE/gid() { echo "$LAST_BODstusH() { ecIT}sno  export LAST_cegid() { /pgid() { echo "\"gid() { echo "$LAST_BOD [KVVID/01gid() { echo "$LAST_BOD"$BAgid() { ect_gid() { ech);}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODY" | pyth'{  eme}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODstusH() { ecIT}s"  fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BODVI  expos"}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODVID/gid() { echo "$LAST_BODstusH() { echo; D/  export LAST_BOD00  exp0[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   expo"P}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { " }[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BOD /ingid() { echo "$LAST_BODstusH() { ecIT}sID  export LAST_BODVI  expos"}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "cegid() { echo "$LAST_BODVID/BA  expo"P}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODASE/gid() { echo "$LAST_BODstusH() { e$VUIgid() { echo "$LAST_BODstusH() { ecIT}s "  export LAST_BODVI  expos" [K}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "DEgid() { echo "$LAST_BODVID/    expo"P}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { " }[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BOD /ingid() { echo "$LAST_BODstusH() { ecIT}sID  chgid() { ETgid() { ecs/gid() { echo "cegid() { echo "$LAST_BOD [KVVID/BA  expo"P}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODASE/gid() { echo LEgid() { echo "$LAST_BODASE/gid() { echo "$LAST_BODstu/cgid() { echo "$LAST_BODY" | pyth'{   [Keeme}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODstusH() { ecIT}s"  fi[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h   export LAST_BODVI  expos"}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODVID/gid() { echo "$LAST_BODstusH() { echo; D/  export#Egid() { echo "$LAST_BODstusH() { ecIT}sER  export LAST_ [KBBODVI  expos"}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo ""[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BODVID/MP  expo"P}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { " }[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hggid() { echo "$LAST_BOD /ingid() { echo "$LAST_BODstusH() { ecIT}sID  ipgid() { ("gid() { ecPYg[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  bash /Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI/test_all.sh[?2004l
+
+━━━ 1. SYSTEM ━━━
+  ✅  [200] GET /health
+  ✅  [200] GET /spec
+
+━━━ 2. AUTH ━━━
+  ✅  [200] POST /auth/login (valid)
+  🔑 Token acquired
+  ✅  [401] POST /auth/login (bad password)
+  ✅  [200] GET  /auth/me
+  ✅  [200] POST /auth/refresh
+
+━━━ 3. USERS ━━━
+  ✅  [200] GET  /users
+  ✅  [201] POST /users (create)
+/Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI/test_all.sh: line 55: UID: readonly variable
+  → Created user id=501
+  ❌  [404 vs 200] GET  /users/501
+       body: {"success":false,"message":"User not found"}
+  ❌  [404 vs 200] PUT  /users/501
+       body: {"success":false,"message":"User not found"}
+  ❌  [404 vs 200] DELETE /users/501
+       body: {"success":false,"message":"User not found"}
+
+━━━ 4. CATEGORIES ━━━
+  ✅  [200] GET  /categories
+  ✅  [201] POST /categories
+  → Created category id=7
+  ❌  [500 vs 200] GET  /categories/7
+       body: {"success":false,"message":"SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list'","trace":"#0 \/Applications\/XAMPP\/xamppfiles\/htdocs\/arif_trade_international\/restAP
+  ✅  [200] PUT  /categories/7
+
+━━━ 5. PRODUCTS ━━━
+  ✅  [200] GET  /products
+  ✅  [201] POST /products
+  → Created product id=2
+  ✅  [200] GET  /products/2
+  ✅  [200] PUT  /products/2
+
+━━━ 6. PRODUCT VARIANTS ━━━
+  ✅  [200] GET  /products/2/variants
+  ❌  [404 vs 201] POST /variants
+       body: {"success":false,"message":"No route matched: POST /variants"}
+  → Created variant id=
+  ❌  [404 vs 200] GET  /variants/
+       body: {"success":false,"message":"No route matched: GET /variants"}
+  ❌  [404 vs 200] PUT  /variants/
+       body: {"success":false,"message":"No route matched: PUT /variants"}
+
+━━━ 7. UNITS ━━━
+  ✅  [200] GET  /units
+  ✅  [201] POST /units
+  → Created unit id=7
+  ✅  [200] GET  /units/7
+  ✅  [200] PUT  /units/7
+
+━━━ 8. VARIANT-UNITS (stock & pricing) ━━━
+  ❌  [404 vs 200] GET  /variants//units
+       body: {"success":false,"message":"No route matched: GET /variants//units"}
+  ❌  [404 vs 201] POST /variant-units
+       body: {"success":false,"message":"No route matched: POST /variant-units"}
+  → Created variant-unit id=
+  ❌  [404 vs 200] GET  /variant-units/
+       body: {"success":false,"message":"No route matched: GET /variant-units"}
+  ❌  [404 vs 200] PUT  /variant-units/
+       body: {"success":false,"message":"No route matched: PUT /variant-units"}
+
+━━━ 9. CUSTOMERS ━━━
+  ✅  [200] GET  /customers
+  ❌  [422 vs 201] POST /customers
+       body: {"success":false,"message":"Validation failed","errors":{"type":["The type field is required."],"phone":["The phone must not exceed 30."]}}
+  → Created customer id=
+  ✅  [200] GET  /customers/
+  ❌  [404 vs 200] PUT  /customers/
+       body: {"success":false,"message":"No route matched: PUT /customers"}
+
+━━━ 10. QUOTATION REQUESTS ━━━
+  ✅  [200] GET  /quotations
+  ❌  [422 vs 201] POST /quotations
+       body: {"success":false,"message":"Validation failed","errors":{"items":["The items field is required."]}}
+  → Created quotation id=
+  ✅  [200] GET  /quotations/
+  ❌  [404 vs 200] PUT  /quotations/
+       body: {"success":false,"message":"No route matched: PUT /quotations"}
+  ❌  [404 vs 200] POST /quotations//accept
+       body: {"success":false,"message":"No route matched: POST /quotations//accept"}
+  → Accepted quotation, invoice id=
+  ❌  [422 vs 201] POST /quotations (for reject)
+       body: {"success":false,"message":"Validation failed","errors":{"items":["The items field is required."]}}
+  ❌  [404 vs 200] POST /quotations//reject
+       body: {"success":false,"message":"No route matched: POST /quotations//reject"}
+
+━━━ 11. INVOICES ━━━
+  ✅  [200] GET  /invoices
+  ✅  [200] GET  /invoices/
+
+━━━ 12. PAYMENTS ━━━
+  ❌  [404 vs 200] GET  /invoices//payments
+       body: {"success":false,"message":"No route matched: GET /invoices//payments"}
+  ❌  [404 vs 201] POST /payments
+       body: {"success":false,"message":"No route matched: POST /payments"}
+  → Created payment id=
+  ❌  [404 vs 200] GET  /payments/
+       body: {"success":false,"message":"No route matched: GET /payments"}
+
+━━━ 13. INVENTORY LOG ━━━
+  ❌  [404 vs 200] GET  /inventory
+       body: {"success":false,"message":"No route matched: GET /inventory"}
+  ❌  [404 vs 200] GET  /inventory?variant_id=
+       body: {"success":false,"message":"No route matched: GET /inventory"}
+
+━━━ 14. QUOTATION RETURN (cleanup test) ━━━
+  ❌  [404 vs 200] POST /quotations//return
+       body: {"success":false,"message":"No route matched: POST /quotations//return"}
+
+━━━ 15. CLEANUP (delete test data) ━━━
+  ❌  [404 vs 200] DELETE /variant-units/
+       body: {"success":false,"message":"No route matched: DELETE /variant-units"}
+  ❌  [204 vs 200] DELETE /units/7
+       body: 
+  ❌  [404 vs 200] DELETE /variants/
+       body: {"success":false,"message":"No route matched: DELETE /variants"}
+  ❌  [204 vs 200] DELETE /products/2
+       body: 
+  ❌  [204 vs 200] DELETE /categories/7
+       body: 
+  ❌  [404 vs 200] DELETE /customers/
+       body: {"success":false,"message":"No route matched: DELETE /customers"}
+
+══════════════════════════════════════════
+  RESULTS:  ✅ PASSED=26   ❌ FAILED=30
+══════════════════════════════════════════
+  Failures:
+    • GET  /users/501  [got 404, want 200]
+    • PUT  /users/501  [got 404, want 200]
+    • DELETE /users/501  [got 404, want 200]
+    • GET  /categories/7  [got 500, want 200]
+    • POST /variants  [got 404, want 201]
+    • GET  /variants/  [got 404, want 200]
+    • PUT  /variants/  [got 404, want 200]
+    • GET  /variants//units  [got 404, want 200]
+    • POST /variant-units  [got 404, want 201]
+    • GET  /variant-units/  [got 404, want 200]
+    • PUT  /variant-units/  [got 404, want 200]
+    • POST /customers  [got 422, want 201]
+    • PUT  /customers/  [got 404, want 200]
+    • POST /quotations  [got 422, want 201]
+    • PUT  /quotations/  [got 404, want 200]
+    • POST /quotations//accept  [got 404, want 200]
+    • POST /quotations (for reject)  [got 422, want 201]
+    • POST /quotations//reject  [got 404, want 200]
+    • GET  /invoices//payments  [got 404, want 200]
+    • POST /payments  [got 404, want 201]
+    • GET  /payments/  [got 404, want 200]
+    • GET  /inventory  [got 404, want 200]
+    • GET  /inventory?variant_id=  [got 404, want 200]
+    • POST /quotations//return  [got 404, want 200]
+    • DELETE /variant-units/  [got 404, want 200]
+    • DELETE /units/7  [got 204, want 200]
+    • DELETE /variants/  [got 404, want 200]
+    • DELETE /products/2  [got 204, want 200]
+    • DELETE /categories/7  [got 204, want 200]
+    • DELETE /customers/  [got 404, want 200]
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  cd /Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI && \[?2004l
+[0m[27m[24m[Jcmdand> [K[?2004h//Applications/XAMPP/xamppfiles/bin/mysql -u root ati_db -e "DESCRIBE categories; DESCRIBE units; DESCRIBE variant_units;" 2>/dev/null[?2004l
++------------+------------------+------+-----+---------------------+----------------+
+| Field      | Type             | Null | Key | Default             | Extra          |
++------------+------------------+------+-----+---------------------+----------------+
+| id         | int(10) unsigned | NO   | PRI | NULL                | auto_increment |
+| name       | varchar(100)     | NO   | UNI | NULL                |                |
+| created_at | timestamp        | NO   |     | current_timestamp() |                |
++------------+------------------+------+-----+---------------------+----------------+
++------------+------------------+------+-----+---------------------+----------------+
+| Field      | Type             | Null | Key | Default             | Extra          |
++------------+------------------+------+-----+---------------------+----------------+
+| id         | int(10) unsigned | NO   | PRI | NULL                | auto_increment |
+| name       | varchar(100)     | NO   | UNI | NULL                |                |
+| multiplier | decimal(10,4)    | NO   |     | 1.0000              |                |
+| created_at | timestamp        | NO   |     | current_timestamp() |                |
++------------+------------------+------+-----+---------------------+----------------+
++----------------+------------------+------+-----+---------------------+-------------------------------+
+| Field          | Type             | Null | Key | Default             | Extra                         |
++----------------+------------------+------+-----+---------------------+-------------------------------+
+| id             | int(10) unsigned | NO   | PRI | NULL                | auto_increment                |
+| variant_id     | int(10) unsigned | NO   | MUL | NULL                |                               |
+| unit_id        | int(10) unsigned | NO   | MUL | NULL                |                               |
+| stock_quantity | decimal(14,4)    | NO   |     | 0.0000              |                               |
+| unit_price     | decimal(14,2)    | NO   |     | 0.00                |                               |
+| created_at     | timestamp        | NO   |     | current_timestamp() |                               |
+| updated_at     | timestamp        | NO   |     | current_timestamp() | on update current_timestamp() |
++----------------+------------------+------+-----+---------------------+-------------------------------+
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  cd /Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI && \[?2004l
+[0m[27m[24m[Jcmdand> [K[?2004h//Applications/XAMPP/xamppfiles/bin/mysql -u root ati_db -e "[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?2004h   DELETE FROM users WHERE email='testuser@ati.local';[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?2004h   DELETE FROM categories WHERE name IN ('Test Category','Test Category Updated','TestCat','TestCatUp');[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?2004h   DELETE FROM products WHERE name LIKE 'Test%' OR name LIKE 'TestProd%';[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?2004h   DELETE FROM units WHERE name LIKE 'Test%' OR name LIKE 'TestPack%';[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?2004h   DELETE FROM customers WHERE email IN ('cust@test.com','tc@test.com');[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?2004h"" 2>/dev/null && echo "DB clean"[?2004l
+DB clean
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  python3 << 'EOF'[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hiimport urllib.request, json, sys[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hBBASE = "http://localhost/arif_trade_international/restAPI"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hTTOKEN = ""[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hPPASS = 0; FAIL = 0[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, path, body=None, auth=True):[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     url = BASE + path[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     data = json.dumps(body).encode() if body else None[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     headers = {"Content-Type": "application/json", "Accept": "application/json"}[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     if auth and TOKEN:[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h         headers["Authorization"] = f"Bearer {TOKEN}"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     r = urllib.request.Request(url, data=data, headers=headers, method=method)[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     try:[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h         with urllib.request.urlopen(r) as resp:[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h             return resp.status, json.loads(resp.read())[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     except urllib.error.HTTPError as e:[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h         return e.code, json.loads(e.read())[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef check(label, method, path, body, expect, auth=True):[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     global PASS, FAIL, TOKEN[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     status, resp = req(method, path, body, auth)[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     ok = status == expect[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     icon = "✅" if ok else "❌"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     print(f"  {icon} [{status}] {label}")[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     if not ok:[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h         print(f"       {json.dumps(resp)[:180]}")[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h         FAIL += 1[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     elimport urllib.re +[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hBBASE = "http://localhost/arif_[7m<ffffffff>[27m[7m<ffffffff>[27m[7m<ffffffff>[27mOKEN = ""[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hPPASS = 0; FAIL = 0[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, path, bodyalPASS = 0;, [?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, che    url = BASE + path[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     data = json.dumps00    data = json.dump("    headers = {"Content-Type": "application/json", "Agi    if auth and TOKEN:[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h         headers["Authorization"] = f"Bearer {TOKEN}"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h    "A        headers["Authh=    r = urllib.request.Request(url, data=data, headke    try:[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h         with urllib.request.urlopen(r) as resp:[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h             return rma       mi            return resp.status, json.loads(res a    except urllib.error.HTTPError as e:[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h         return,"        return e.code, json.loads(e.re"p[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef check(label, method, path, body, expe /a    global PASS, FAIL, TOKEN[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     status, resp = req(metPO    status, resp = req(methau    ok = status == expect[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     icon = "✅" if oS     icon = "✅" if ok eus    print(f"  {icon} [{status}] )[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     if not ok:[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h         print(f"       {j",        printer        FAIL += 1[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     elimport urllib.re +[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hBBASE 4"    elimport url},BASE = "http://localhosidPASS = 0; FAIL = 0[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method, che    url = BASE + paus    data = json.dumps00    data = json.le        headers["Authorization"]  [K== f"Bearer {TOKEN}"[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h    "A        headers["Authh=    r = urllib.request.Request(url, data[7m<ffffffff>[27m[7m<ffffffff>[27m   "A        headers["Authh=    r = urllib.re [Kqquest.,         with urllib.request.urlopen(r) as resp:[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h             return rma       mi         [?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hcc            return rma       mi            retci        return,"        return e.code, json.loads(e.re"p[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef check(label, method, path, body, expe /a    global PASS,stdef check(label, method, path, body, expe /a    global ch    status, re [Kssp = req(metPO    status, resp = req(methau    ok = statuod    icon = "✅" if oS     icon = "✅" if ok eus    print(f"  {icon} [{status}] da   [K   if not ok:[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h         print(f"       {j",        printer        FAIL += 1[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     elec        printuc    elimport urllib.re +[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hBBASE 4"    elimport url},BASE = "},BASE 4"    elimport url[7m<ffffffff>[27m[7m<ffffffff>[27m[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method, che    f"def req(method, 00)def s"   "A        headers["Authh=    r = urllib.request.Request(url,  [Kddata[7m<ffffffff>[27m[7m<ffffffff>[27m   "A        headers["Authh=    r = urllib.request.,         with urllib.request.00            return rma       mi     [K      [?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hcc            return rma       mi            retci        return,"        return e.code, json.loads(e.re"p[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef check(label, metho",c            return rma       mi       \ndef check(label, method, path, body, expe /a    global PASS,stdef ch [Keeck(label, method, path, body, expe ST        print(f"       {j",        printer        FAIL += 1[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004h     elec        printuc    elimport urllib.re +[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hBBASE 4"    elimport url},BASE = "},BASE 4"    elimport url[7m<ffffffff>[27m[7m<ffffffff>[27m[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method, che    f"def req(method, 00)def s"   "A        headers["Auts/    elec        printuc    elimport u [Krrllib.re +[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hBBASE 4"   r BASE 4"    elimport url},BASE = "},BASE 4"     fdef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method,icdef req(method, 00)def tic            return rma       mi            retci        return,"        [K  return e.code, json.loads(e.re"p[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef check(label, metho",c            return rma       mi       \ndef check(label, method, path, body, expe /a    global PASS,stdef ch [Keeck(label, method, pat("def check(label, metho",c            return rma       mi       \ndef check(label, method, path, body, ex      elec     [K     printuc    elimport urllib.re +[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hBBASE 4"    elimport url},BASE = "},BASE 4"    elimport url[7m<ffffffff>[27m[7m<ffffffff>[27m[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method, che    f"def req(method, 00)def s"   "A        headers["AutsusBASE 4"    elimport url},BASE = "},B [KAASE 4"    esdef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method,chdef req(method, 00)def "GBASE 4"   r BASE 4"    elimport url},BASE = "},BASE 4"     fdef req(meth [Kood, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method,icdef req(method, 00)deridef req(method, 00)def req(method,icdef req(method, 00)def tic             [Krreturn rmnsdef check(label, metho",c            return rma       mi       \ndef check(label, method, path, body, expe /a    global PASS,stdef  [Kccheck(label, method, pat("def checd"BASE 4"    elimport url},BASE = "},BASE 4"    elimport url[7m<ffffffff>[27m[7m<ffffffff>[27m[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method, che    f"def req(method, 00)def s"   "A        headers["AutsusBASE 4"    elimport url},BASE = "},B [KAASE 4"    esdef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method,chdef req(method, 02}def req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method,  def req(method, 00)def  2def req(method, 00)def req(method,chdef req(method, 00)def "GBASE 4"   r [K  BASE 4"    elimport url},BASE = "},BASE 4"     fdef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def0)def req(method, 00)def req(method,icdef req(method, 00)deridef req(method, 00)def req(method,icdef req(method [K,, 00)def tic            return rmnsPOdef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method, che    f"def req(method, 00)def s"   "A        headers["AutsusBASE 4"    elimport url},BASE = "},B [KAASE 4"    esdef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method,chdef req(method, 02}def req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method,  def req(method, 00)def  2def req(method, 00)def req(method,GEdef req(method, 00)diant_def req(met [Khhod, 00)def req(method,chdef req(method, 02}def req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method,  def req(method, 00)def  2def req(method, 00)def req( fdef req(method, 00)def req(method,  def req [K((method, 00)def  2def req(method, 0[7m<ffffffff>[27mef req(method, 00)def0)def req(method, 00)def req(method,icdef req(method, 00)deridef req(method, [K  00)def req(method,icdef req(method, 00)def tic            return rmnsPOdef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(meETdef req(method, 00)def req(method, che    f"def req(method, 00)def s"   "A        headers["AutsusBASE 4"    elimport url} [K,,BASE = "},BASE 4"    esdef req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def   def req(method, 00)def req(method,chdef req(method, 02}def req(method, path, er[?2004l
+[0m[27m[24m[Jheredoc> [K[?2004hddef req(method, 00)def req(method,  def req(method, 00)def  2def req(method, 00)def req(REdef req(method, 00)def req(method,  def req [K((method, 00)def  2def req(me[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  EOF[?2004l
+zsh: command not found: EOF
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  python3 /Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI/test_api.py[?2004l
+  File [35m"/Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI/test_api.py"[0m, line [35m47[0m
+    [1;31mglobal TOKEN[0m
+    [1;31m^^^^^^^^^^^^[0m
+[1;35mSyntaxError[0m: [35mname 'TOKEN' is assigned to before global declaration[0m
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  python3 /Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI/test_api.py[?2004l
+
+━━━ 1. SYSTEM ━━━
+  OK  [200] GET /health
+  OK  [200] GET /spec
+
+━━━ 2. AUTH ━━━
+  OK  [200] POST /auth/login (valid)
+  🔑 token acquired
+  OK  [401] POST /auth/login (wrong password)
+  OK  [422] POST /auth/login (invalid email)
+  OK  [200] GET  /auth/me
+  OK  [200] POST /auth/refresh
+
+━━━ 3. USERS ━━━
+  OK  [200] GET /users
+  OK  [201] POST /users
+  → user id=4
+  OK  [200] GET /users/4
+  OK  [200] PUT /users/4
+Traceback (most recent call last):
+  File [35m"/Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI/test_api.py"[0m, line [35m64[0m, in [35m<module>[0m
+    [31mcheck[0m[1;31m(f"DELETE /users/{uid}", "DELETE", f"/users/{uid}", None, 200)[0m
+    [31m~~~~~[0m[1;31m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI/test_api.py"[0m, line [35m26[0m, in [35mcheck[0m
+    status, resp = [31mreq[0m[1;31m(method, path, body, auth)[0m
+                   [31m~~~[0m[1;31m^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI/test_api.py"[0m, line [35m20[0m, in [35mreq[0m
+    return resp.status, [31mjson.loads[0m[1;31m(resp.read())[0m
+                        [31m~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^[0m
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/__init__.py"[0m, line [35m346[0m, in [35mloads[0m
+    return [31m_default_decoder.decode[0m[1;31m(s)[0m
+           [31m~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^[0m
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/decoder.py"[0m, line [35m345[0m, in [35mdecode[0m
+    obj, end = [31mself.raw_decode[0m[1;31m(s, idx=_w(s, 0).end())[0m
+               [31m~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/decoder.py"[0m, line [35m363[0m, in [35mraw_decode[0m
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+[1;35mjson.decoder.JSONDecodeError[0m: [35mExpecting value: line 1 column 1 (char 0)[0m
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  python3 /Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI/test_api.py[?2004l
+
+━━━ 1. SYSTEM ━━━
+  OK  [200] GET /health
+  OK  [200] GET /spec
+
+━━━ 2. AUTH ━━━
+  OK  [200] POST /auth/login (valid)
+  🔑 token acquired
+  OK  [401] POST /auth/login (wrong password)
+  OK  [422] POST /auth/login (invalid email)
+  OK  [200] GET  /auth/me
+  OK  [200] POST /auth/refresh
+
+━━━ 3. USERS ━━━
+  OK  [200] GET /users
+  OK  [201] POST /users
+  → user id=5
+  OK  [200] GET /users/5
+  OK  [200] PUT /users/5
+  FAIL [204] DELETE /users/5
+       {}
+
+━━━ 4. CATEGORIES ━━━
+  OK  [200] GET /categories
+  OK  [201] POST /categories
+  → cat id=8
+  OK  [200] GET /categories/8
+  OK  [200] PUT /categories/8
+
+━━━ 5. PRODUCTS ━━━
+  OK  [200] GET /products
+  OK  [201] POST /products
+  → product id=3
+  OK  [200] GET /products/3
+  OK  [200] PUT /products/3
+
+━━━ 6. PRODUCT VARIANTS ━━━
+  OK  [200] GET /products/3/variants
+  OK  [201] POST /products/3/variants
+  → variant id=1
+  OK  [200] GET /variants/1
+  FAIL [400] PUT /variants/1
+       {"success": false, "message": "Nothing to update"}
+
+━━━ 7. UNITS ━━━
+  OK  [200] GET /units
+  OK  [201] POST /units
+  → unit id=8
+  OK  [200] GET /units/8
+  OK  [200] PUT /units/8
+
+━━━ 8. VARIANT-UNITS ━━━
+  OK  [200] GET /variants/1/units
+  OK  [201] POST /variants/1/units
+  → variant-unit id=1
+  OK  [200] GET /variant-units/1
+  OK  [200] PUT /variant-units/1
+
+━━━ 9. CUSTOMERS ━━━
+  OK  [200] GET /customers
+  FAIL [422] POST /customers
+       {"success": false, "message": "Validation failed", "errors": {"phone": ["The phone must not exceed 30."]}}
+Traceback (most recent call last):
+  File [35m"/Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI/test_api.py"[0m, line [35m115[0m, in [35m<module>[0m
+    cusid = [31mr[0m[1;31m["data"][0m["id"]
+            [31m~[0m[1;31m^^^^^^^^[0m
+[1;35mKeyError[0m: [35m'data'[0m
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  cat modules/core/../core/Validator.php 2>/dev/null || cat core/Validator.php[?2004l
+<?php
+// ============================================================
+// Validator – lightweight input validation
+// ============================================================
+
+class Validator
+{
+    private array $errors = [];
+
+    /**
+     * Validate $data against $rules.
+     *
+     * Rules are pipe-separated strings, e.g.:
+     *   'required|string|max:200'
+     *   'required|numeric|min:0'
+     *   'nullable|email'
+     *   'required|in:pending,accepted,rejected,returned'
+     */
+    public function validate(array $data, array $rules): bool
+    {
+        $this->errors = [];
+
+        foreach ($rules as $field => $ruleStr) {
+            $fieldRules = explode('|', $ruleStr);
+            $value      = $data[$field] ?? null;
+            $nullable   = in_array('nullable', $fieldRules, true);
+
+            foreach ($fieldRules as $rule) {
+                if ($rule === 'nullable') continue;
+
+                [$ruleName, $ruleParam] = array_pad(explode(':', $rule, 2), 2, null);
+
+                // Skip further rules if nullable and value is absent/null
+                if ($nullable && ($value === null || $value === '')) {
+                    break;
+                }
+
+                $this->applyRule($field, $value, $ruleName, $ruleParam, $data);
+            }
+        }
+
+        return empty($this->errors);
+    }
+
+    public function errors(): array
+    {
+        return $this->errors;
+    }
+
+    /** Validate and abort with 422 on failure */
+    public function validateOrFail(array $data, array $rules): void
+    {
+        if (!$this->validate($data, $rules)) {
+            Response::unprocessable($this->errors);
+        }
+    }
+
+    // ── Rule engine ───────────────────────────────────────────
+    private function applyRule(
+        string  $field,
+        mixed   $value,
+        string  $rule,
+        ?string $param,
+        array   $data
+    ): void {
+        switch ($rule) {
+            case 'required':
+                if ($value === null || $value === '') {
+                    $this->errors[$field][] = "The $field field is required.";
+                }
+                break;
+
+            case 'string':
+                if ($value !== null && !is_string($value)) {
+                    $this->errors[$field][] = "The $field must be a string.";
+                }
+                break;
+
+            case 'numeric':
+                if ($value !== null && !is_numeric($value)) {
+                    $this->errors[$field][] = "The $field must be numeric.";
+                }
+                break;
+
+            case 'integer':
+                if ($value !== null && filter_var($value, FILTER_VALIDATE_INT) === false) {
+                    $this->errors[$field][] = "The $field must be an integer.";
+                }
+                break;
+
+            case 'boolean':
+                if ($value !== null && !in_array($value, [true, false, 0, 1, '0', '1'], true)) {
+                    $this->errors[$field][] = "The $field must be a boolean.";
+                }
+                break;
+
+            case 'email':
+                if ($value !== null && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                    $this->errors[$field][] = "The $field must be a valid email.";
+                }
+                break;
+
+            case 'min':
+                if ($value !== null && is_numeric($value) && $value < (float)$param) {
+                    $this->errors[$field][] = "The $field must be at least $param.";
+                } elseif ($value !== null && is_string($value) && strlen($value) < (int)$param) {
+                    $this->errors[$field][] = "The $field must be at least $param characters.";
+                }
+                break;
+
+            case 'max':
+                if ($value !== null && is_numeric($value) && $value > (float)$param) {
+                    $this->errors[$field][] = "The $field must not exceed $param.";
+                } elseif ($value !== null && is_string($value) && strlen($value) > (int)$param) {
+                    $this->errors[$field][] = "The $field must not exceed $param characters.";
+                }
+                break;
+
+            case 'in':
+                $allowed = explode(',', $param ?? '');
+                if ($value !== null && !in_array((string)$value, $allowed, true)) {
+                    $this->errors[$field][] = "The $field must be one of: " . implode(', ', $allowed) . '.';
+                }
+                break;
+
+            case 'array':
+                if ($value !== null && !is_array($value)) {
+                    $this->errors[$field][] = "The $field must be an array.";
+                }
+                break;
+
+            case 'date':
+                if ($value !== null && strtotime($value) === false) {
+                    $this->errors[$field][] = "The $field must be a valid date.";
+                }
+                break;
+
+            case 'confirmed':
+                $confirmField = $field . '_confirmation';
+                if ($value !== ($data[$confirmField] ?? null)) {
+                    $this->errors[$field][] = "The $field confirmation does not match.";
+                }
+                break;
+        }
+    }
+}
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  cat modules/variants/VariantController.php && /Applications/XAMPP/xamppfiles/bin/mysql -u root [K  ati_db -e "DESCRIBE product_variants;" 2>/dev/null[?2004l
+<?php
+// ============================================================
+// VariantController – Product Variants CRUD
+// ============================================================
+
+class VariantController
+{
+    /** GET /products/{productId}/variants */
+    public static function index(Request $req): void
+    {
+        $rows = Database::fetchAll(
+            'SELECT id, product_id, attributes, sku, is_active, created_at
+             FROM product_variants WHERE product_id = ? ORDER BY id',
+            [$req->params['productId']]
+        );
+
+        $rows = array_map(function ($r) {
+            $r['attributes'] = json_decode($r['attributes'], true);
+            return castRow($r, ['id', 'product_id'], [], ['is_active']);
+        }, $rows);
+
+        Response::success($rows);
+    }
+
+    /** POST /products/{productId}/variants */
+    public static function store(Request $req): void
+    {
+        $productId = (int)$req->params['productId'];
+        if (!Database::fetchOne('SELECT id FROM products WHERE id = ?', [$productId])) {
+            Response::notFound('Product not found');
+        }
+
+        $data = $req->all();
+        (new Validator())->validateOrFail($data, [
+            'attributes' => 'required|array',
+            'sku'        => 'nullable|string|max:100',
+        ]);
+
+        // Check SKU uniqueness if provided
+        if (!empty($data['sku'])) {
+            if (Database::fetchScalar('SELECT COUNT(*) FROM product_variants WHERE sku = ?', [$data['sku']])) {
+                Response::error('SKU already exists', 409);
+            }
+        }
+
+        Database::query(
+            'INSERT INTO product_variants (product_id, attributes, sku) VALUES (?, ?, ?)',
+            [$productId, json_encode($data['attributes']), $data['sku'] ?? null]
+        );
+
+        Response::created(['id' => (int)Database::lastInsertId()], 'Variant created');
+    }
+
+    /** GET /variants/{id} */
+    public static function show(Request $req): void
+    {
+        $variant = Database::fetchOne(
+            'SELECT pv.id, pv.product_id, pv.attributes, pv.sku, pv.is_active,
+                    pv.created_at, pv.updated_at,
+                    p.name AS product_name, p.product_code
+             FROM product_variants pv
+             JOIN products p ON p.id = pv.product_id
+             WHERE pv.id = ?',
+            [$req->params['id']]
+        );
+        if (!$variant) Response::notFound('Variant not found');
+
+        $variant['attributes'] = json_decode($variant['attributes'], true);
+        $variant['units'] = Database::fetchAll(
+            'SELECT vu.id, u.id AS unit_id, u.name AS unit_name, u.multiplier,
+                    vu.stock_quantity, vu.unit_price
+             FROM variant_units vu JOIN units u ON u.id = vu.unit_id
+             WHERE vu.variant_id = ?',
+            [$variant['id']]
+        );
+        $variant['units'] = array_map(
+            fn($r) => castRow($r, ['id', 'unit_id'], ['multiplier', 'stock_quantity', 'unit_price']),
+            $variant['units']
+        );
+
+        Response::success(castRow($variant, ['id', 'product_id'], [], ['is_active']));
+    }
+
+    /** PUT /variants/{id} */
+    public static function update(Request $req): void
+    {
+        if (!Database::fetchOne('SELECT id FROM product_variants WHERE id = ?', [$req->params['id']])) {
+            Response::notFound('Variant not found');
+        }
+
+        $data = $req->all();
+        (new Validator())->validateOrFail($data, [
+            'attributes' => 'nullable|array',
+            'sku'        => 'nullable|string|max:100',
+            'is_active'  => 'nullable|boolean',
+        ]);
+
+        $sets = []; $params = [];
+        if (isset($data['attributes'])) { $sets[] = 'attributes = ?'; $params[] = json_encode($data['attributes']); }
+        if (isset($data['sku']))        { $sets[] = 'sku = ?';        $params[] = $data['sku']; }
+        if (isset($data['is_active']))  { $sets[] = 'is_active = ?';  $params[] = (int)(bool)$data['is_active']; }
+
+        if (empty($sets)) Response::error('Nothing to update', 400);
+        $params[] = $req->params['id'];
+        Database::query('UPDATE product_variants SET ' . implode(', ', $sets) . ' WHERE id = ?', $params);
+        Response::success(null, 'Variant updated');
+    }
+
+    /** DELETE /variants/{id} */
+    public static function destroy(Request $req): void
+    {
+        $deleted = Database::query(
+            'DELETE FROM product_variants WHERE id = ?',
+            [$req->params['id']]
+        )->rowCount();
+        if (!$deleted) Response::notFound('Variant not found');
+        Response::noContent();
+    }
+}
++------------+------------------+------+-----+---------------------+-------------------------------+
+| Field      | Type             | Null | Key | Default             | Extra                         |
++------------+------------------+------+-----+---------------------+-------------------------------+
+| id         | int(10) unsigned | NO   | PRI | NULL                | auto_increment                |
+| product_id | int(10) unsigned | NO   | MUL | NULL                |                               |
+| attributes | longtext         | NO   |     | NULL                |                               |
+| sku        | varchar(100)     | YES  | UNI | NULL                |                               |
+| is_active  | tinyint(1)       | NO   |     | 1                   |                               |
+| created_at | timestamp        | NO   |     | current_timestamp() |                               |
+| updated_at | timestamp        | NO   |     | current_timestamp() | on update current_timestamp() |
++------------+------------------+------+-----+---------------------+-------------------------------+
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  grep -n "variant\|unit_price\|PUT" test_api.py | head -60[?2004l
+65:check(f"PUT /users/{uid}",    "PUT",    f"/users/{uid}", {"name":"TUser Updated","role":"editor"}, 200)
+74:check(f"PUT /categories/{cid}", "PUT", f"/categories/{cid}", {"name":"TestCatUp"}, 200)
+82:check(f"PUT /products/{pid}", "PUT", f"/products/{pid}", {"name":"TestProdUpdated"}, 200)
+85:check(f"GET /products/{pid}/variants", "GET", f"/products/{pid}/variants", None, 200)
+86:r    = check(f"POST /products/{pid}/variants", "POST", f"/products/{pid}/variants",
+87:             {"name":"Standard","sku":"TST-001","unit_price":"100.00","attributes":{}}, 201)
+89:print(f"  → variant id={vid}")
+90:check(f"GET /variants/{vid}", "GET", f"/variants/{vid}", None, 200)
+91:check(f"PUT /variants/{vid}", "PUT", f"/variants/{vid}", {"unit_price":"120.00"}, 200)
+99:check(f"PUT /units/{unid}", "PUT", f"/units/{unid}", {"name":"TestPackUp"}, 200)
+102:check(f"GET /variants/{vid}/units", "GET", f"/variants/{vid}/units", None, 200)
+103:r    = check(f"POST /variants/{vid}/units", "POST", f"/variants/{vid}/units",
+104:             {"unit_id":unid,"unit_price":"150.00","stock_quantity":50}, 201)
+106:print(f"  → variant-unit id={vuid}")
+107:check(f"GET /variant-units/{vuid}", "GET", f"/variant-units/{vuid}", None, 200)
+108:check(f"PUT /variant-units/{vuid}", "PUT", f"/variant-units/{vuid}", {"stock_quantity":60}, 200)
+118:check(f"PUT /customers/{cusid}", "PUT", f"/customers/{cusid}", {"name":"TestCustUpdated"}, 200)
+124:              "items":[{"variant_unit_id":vuid,"quantity":2}]}, 201)
+128:r    = check(f"PUT /quotations/{qid}/status (accept)", "PUT", f"/quotations/{qid}/status",
+135:              "items":[{"variant_unit_id":vuid,"quantity":1}]}, 201)
+137:check(f"PUT /quotations/{qid2}/status (reject)", "PUT", f"/quotations/{qid2}/status",
+154:check(f"GET /inventory/log?variant_id={vid}",     "GET", f"/inventory/log?variant_id={vid}",    None, 200)
+157:check(f"PUT /quotations/{qid}/status (return)", "PUT", f"/quotations/{qid}/status",
+161:check(f"DELETE /variant-units/{vuid}", "DELETE", f"/variant-units/{vuid}", None, 204)
+163:check(f"DELETE /variants/{vid}",       "DELETE", f"/variants/{vid}",       None, 204)
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  python3 test_api.py 2>&1[?2004l
+
+━━━ 1. SYSTEM ━━━
+  OK  [200] GET /health
+  OK  [200] GET /spec
+
+━━━ 2. AUTH ━━━
+  OK  [200] POST /auth/login (valid)
+  🔑 token acquired
+  OK  [401] POST /auth/login (wrong password)
+  OK  [422] POST /auth/login (invalid email)
+  OK  [200] GET  /auth/me
+  OK  [200] POST /auth/refresh
+
+━━━ 3. USERS ━━━
+  OK  [200] GET /users
+  OK  [201] POST /users
+  → user id=6
+  OK  [200] GET /users/6
+  OK  [200] PUT /users/6
+  FAIL [204] DELETE /users/6
+       {}
+
+━━━ 4. CATEGORIES ━━━
+  OK  [200] GET /categories
+  OK  [201] POST /categories
+  → cat id=9
+  OK  [200] GET /categories/9
+  FAIL [500] PUT /categories/9
+       {"success": false, "message": "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TestCatUp' for key 'uq_categories_name'", "trace": "#0 /Applications/XAMPP/xamppfiles/htdocs/arif_
+
+━━━ 5. PRODUCTS ━━━
+  OK  [200] GET /products
+  OK  [201] POST /products
+  → product id=4
+  OK  [200] GET /products/4
+  OK  [200] PUT /products/4
+
+━━━ 6. PRODUCT VARIANTS ━━━
+  OK  [200] GET /products/4/variants
+  FAIL [409] POST /products/4/variants
+       {"success": false, "message": "SKU already exists"}
+Traceback (most recent call last):
+  File [35m"/Applications/XAMPP/xamppfiles/htdocs/arif_trade_international/restAPI/test_api.py"[0m, line [35m88[0m, in [35m<module>[0m
+    vid  = [31mr[0m[1;31m["data"][0m["id"]
+           [31m~[0m[1;31m^^^^^^^^[0m
+[1;35mKeyError[0m: [35m'data'[0m
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  grep -n "DELETE\|check.*204\|check.*200.*DELETE" test_api.py[?2004l
+66:check(f"DELETE /users/{uid}", "DELETE", f"/users/{uid}", None, 200)
+161:check(f"DELETE /variant-units/{vuid}", "DELETE", f"/variant-units/{vuid}", None, 204)
+162:check(f"DELETE /units/{unid}",         "DELETE", f"/units/{unid}",         None, 204)
+163:check(f"DELETE /variants/{vid}",       "DELETE", f"/variants/{vid}",       None, 204)
+164:check(f"DELETE /products/{pid}",       "DELETE", f"/products/{pid}",       None, 204)
+165:check(f"DELETE /categories/{cid}",     "DELETE", f"/categories/{cid}",     None, 204)
+166:check(f"DELETE /customers/{cusid}",    "DELETE", f"/customers/{cusid}",    None, 204)
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  python3 test_api.py 2>&1[?2004l
+Cleaning up stale test data…
+Cleanup done.
+
+
+━━━ 1. SYSTEM ━━━
+  OK  [200] GET /health
+  OK  [200] GET /spec
+
+━━━ 2. AUTH ━━━
+  OK  [200] POST /auth/login (valid)
+  🔑 token acquired
+  OK  [401] POST /auth/login (wrong password)
+  OK  [422] POST /auth/login (invalid email)
+  OK  [200] GET  /auth/me
+  OK  [200] POST /auth/refresh
+
+━━━ 3. USERS ━━━
+  OK  [200] GET /users
+  OK  [201] POST /users
+  → user id=7
+  OK  [200] GET /users/7
+  OK  [200] PUT /users/7
+  OK  [204] DELETE /users/7
+
+━━━ 4. CATEGORIES ━━━
+  OK  [200] GET /categories
+  OK  [201] POST /categories
+  → cat id=10
+  OK  [200] GET /categories/10
+  OK  [200] PUT /categories/10
+
+━━━ 5. PRODUCTS ━━━
+  OK  [200] GET /products
+  OK  [201] POST /products
+  → product id=5
+  OK  [200] GET /products/5
+  OK  [200] PUT /products/5
+
+━━━ 6. PRODUCT VARIANTS ━━━
+  OK  [200] GET /products/5/variants
+  OK  [201] POST /products/5/variants
+  → variant id=2
+  OK  [200] GET /variants/2
+  OK  [200] PUT /variants/2
+
+━━━ 7. UNITS ━━━
+  OK  [200] GET /units
+  OK  [201] POST /units
+  → unit id=9
+  OK  [200] GET /units/9
+  OK  [200] PUT /units/9
+
+━━━ 8. VARIANT-UNITS ━━━
+  OK  [200] GET /variants/2/units
+  OK  [201] POST /variants/2/units
+  → variant-unit id=2
+  OK  [200] GET /variant-units/2
+  OK  [200] PUT /variant-units/2
+
+━━━ 9. CUSTOMERS ━━━
+  OK  [200] GET /customers
+  OK  [201] POST /customers
+  → customer id=1
+  OK  [200] GET /customers/1
+  OK  [200] PUT /customers/1
+
+━━━ 10. QUOTATION REQUESTS ━━━
+  OK  [200] GET /quotations
+  OK  [201] POST /quotations
+  → quotation id=1
+  OK  [200] GET /quotations/1
+  OK  [200] PUT /quotations/1/status (accept)
+  → invoice id=1
+  OK  [201] POST /quotations (for reject test)
+  OK  [200] PUT /quotations/2/status (reject)
+
+━━━ 11. INVOICES ━━━
+  OK  [200] GET /invoices
+  OK  [200] GET /invoices/1
+
+━━━ 12. PAYMENTS ━━━
+  OK  [200] GET /invoices/1/payments
+  OK  [201] POST /invoices/1/payments
+  → payment id=1
+  OK  [200] GET /payments/1
+
+━━━ 13. INVENTORY LOG ━━━
+  OK  [200] GET /inventory/log
+  OK  [200] GET /inventory/log?variant_id=2
+
+━━━ 14. QUOTATION RETURN ━━━
+  OK  [200] PUT /quotations/1/status (return)
+
+━━━ 15. CLEANUP ━━━
+  FAIL [409] DELETE /variant-units/2
+       {"success": false, "message": "Variant-unit has quotation items and cannot be deleted"}
+  FAIL [409] DELETE /units/9
+       {"success": false, "message": "Unit is linked to variants and cannot be deleted"}
+  FAIL [500] DELETE /variants/2
+       {"success": false, "message": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ati_db`.`inventory_log`, CONSTRAINT `fk_invl
+  FAIL [500] DELETE /products/5
+       {"success": false, "message": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ati_db`.`inventory_log`, CONSTRAINT `fk_invl
+  OK  [204] DELETE /categories/10
+  FAIL [409] DELETE /customers/1
+       {"success": false, "message": "Customer has invoices and cannot be deleted"}
+
+============================================
+  RESULTS:  PASSED=51   FAILED=5
+============================================
+  Failures:
+    • DELETE /variant-units/2  [got 409, want 204]
+    • DELETE /units/9  [got 409, want 204]
+    • DELETE /variants/2  [got 500, want 204]
+    • DELETE /products/5  [got 500, want 204]
+    • DELETE /customers/1  [got 409, want 204]
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  python3 test_api.py 2>&1[?2004l
+Cleaning up stale test data…
+Cleanup done.
+
+
+━━━ 1. SYSTEM ━━━
+  OK  [200] GET /health
+  OK  [200] GET /spec
+
+━━━ 2. AUTH ━━━
+  OK  [200] POST /auth/login (valid)
+  🔑 token acquired
+  OK  [401] POST /auth/login (wrong password)
+  OK  [422] POST /auth/login (invalid email)
+  OK  [200] GET  /auth/me
+  OK  [200] POST /auth/refresh
+
+━━━ 3. USERS ━━━
+  OK  [200] GET /users
+  OK  [201] POST /users
+  → user id=8
+  OK  [200] GET /users/8
+  OK  [200] PUT /users/8
+  OK  [204] DELETE /users/8
+
+━━━ 4. CATEGORIES ━━━
+  OK  [200] GET /categories
+  OK  [201] POST /categories
+  → cat id=11
+  OK  [200] GET /categories/11
+  OK  [200] PUT /categories/11
+
+━━━ 5. PRODUCTS ━━━
+  OK  [200] GET /products
+  OK  [201] POST /products
+  → product id=6
+  OK  [200] GET /products/6
+  OK  [200] PUT /products/6
+
+━━━ 6. PRODUCT VARIANTS ━━━
+  OK  [200] GET /products/6/variants
+  OK  [201] POST /products/6/variants
+  → variant id=3
+  OK  [200] GET /variants/3
+  FAIL [500] PUT /variants/3
+       {"success": false, "message": "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TST-001-UP' for key 'uq_variants_sku'", "trace": "#0 /Applications/XAMPP/xamppfiles/htdocs/arif_tr
+
+━━━ 7. UNITS ━━━
+  OK  [200] GET /units
+  OK  [201] POST /units
+  → unit id=10
+  OK  [200] GET /units/10
+  FAIL [500] PUT /units/10
+       {"success": false, "message": "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TestPackUp' for key 'uq_units_name'", "trace": "#0 /Applications/XAMPP/xamppfiles/htdocs/arif_trad
+
+━━━ 8. VARIANT-UNITS ━━━
+  OK  [200] GET /variants/3/units
+  OK  [201] POST /variants/3/units
+  → variant-unit id=3
+  OK  [200] GET /variant-units/3
+  OK  [200] PUT /variant-units/3
+
+━━━ 9. CUSTOMERS ━━━
+  OK  [200] GET /customers
+  OK  [201] POST /customers
+  → customer id=2
+  OK  [200] GET /customers/2
+  OK  [200] PUT /customers/2
+
+━━━ 10. QUOTATION REQUESTS ━━━
+  OK  [200] GET /quotations
+  OK  [201] POST /quotations
+  → quotation id=3
+  OK  [200] GET /quotations/3
+  OK  [200] PUT /quotations/3/status (accept)
+  → invoice id=2
+  OK  [201] POST /quotations (for reject test)
+  OK  [200] PUT /quotations/4/status (reject)
+
+━━━ 11. INVOICES ━━━
+  OK  [200] GET /invoices
+  OK  [200] GET /invoices/2
+
+━━━ 12. PAYMENTS ━━━
+  OK  [200] GET /invoices/2/payments
+  OK  [201] POST /invoices/2/payments
+  → payment id=2
+  OK  [200] GET /payments/2
+
+━━━ 13. INVENTORY LOG ━━━
+  OK  [200] GET /inventory/log
+  OK  [200] GET /inventory/log?variant_id=3
+
+━━━ 14. QUOTATION RETURN ━━━
+  OK  [200] PUT /quotations/3/status (return)
+
+━━━ 15. CLEANUP ━━━
+  FAIL [409] DELETE /variant-units/3
+       {"success": false, "message": "Variant-unit has quotation items and cannot be deleted"}
+  FAIL [409] DELETE /units/10
+       {"success": false, "message": "Unit is linked to variants and cannot be deleted"}
+  FAIL [500] DELETE /variants/3
+       {"success": false, "message": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ati_db`.`inventory_log`, CONSTRAINT `fk_invl
+  FAIL [500] DELETE /products/6
+       {"success": false, "message": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ati_db`.`inventory_log`, CONSTRAINT `fk_invl
+  OK  [204] DELETE /categories/11
+  FAIL [409] DELETE /customers/2
+       {"success": false, "message": "Customer has invoices and cannot be deleted"}
+
+============================================
+  RESULTS:  PASSED=49   FAILED=7
+============================================
+  Failures:
+    • PUT /variants/3  [got 500, want 200]
+    • PUT /units/10  [got 500, want 200]
+    • DELETE /variant-units/3  [got 409, want 204]
+    • DELETE /units/10  [got 409, want 204]
+    • DELETE /variants/3  [got 500, want 204]
+    • DELETE /products/6  [got 500, want 204]
+    • DELETE /customers/2  [got 409, want 204]
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  python3 test_api.py 2>&1[?2004l
+Cleaning up stale test data…
+Cleanup done.
+
+
+━━━ 1. SYSTEM ━━━
+  OK  [200] GET /health
+  OK  [200] GET /spec
+
+━━━ 2. AUTH ━━━
+  OK  [200] POST /auth/login (valid)
+  🔑 token acquired
+  OK  [401] POST /auth/login (wrong password)
+  OK  [422] POST /auth/login (invalid email)
+  OK  [200] GET  /auth/me
+  OK  [200] POST /auth/refresh
+
+━━━ 3. USERS ━━━
+  OK  [200] GET /users
+  OK  [201] POST /users
+  → user id=9
+  OK  [200] GET /users/9
+  OK  [200] PUT /users/9
+  OK  [204] DELETE /users/9
+
+━━━ 4. CATEGORIES ━━━
+  OK  [200] GET /categories
+  OK  [201] POST /categories
+  → cat id=12
+  OK  [200] GET /categories/12
+  OK  [200] PUT /categories/12
+
+━━━ 5. PRODUCTS ━━━
+  OK  [200] GET /products
+  OK  [201] POST /products
+  → product id=7
+  OK  [200] GET /products/7
+  OK  [200] PUT /products/7
+
+━━━ 6. PRODUCT VARIANTS ━━━
+  OK  [200] GET /products/7/variants
+  OK  [201] POST /products/7/variants
+  → variant id=4
+  OK  [200] GET /variants/4
+  OK  [200] PUT /variants/4
+
+━━━ 7. UNITS ━━━
+  OK  [200] GET /units
+  OK  [201] POST /units
+  → unit id=11
+  OK  [200] GET /units/11
+  OK  [200] PUT /units/11
+
+━━━ 8. VARIANT-UNITS ━━━
+  OK  [200] GET /variants/4/units
+  OK  [201] POST /variants/4/units
+  → variant-unit id=4
+  OK  [200] GET /variant-units/4
+  OK  [200] PUT /variant-units/4
+
+━━━ 9. CUSTOMERS ━━━
+  OK  [200] GET /customers
+  OK  [201] POST /customers
+  → customer id=3
+  OK  [200] GET /customers/3
+  OK  [200] PUT /customers/3
+
+━━━ 10. QUOTATION REQUESTS ━━━
+  OK  [200] GET /quotations
+  OK  [201] POST /quotations
+  → quotation id=5
+  OK  [200] GET /quotations/5
+  OK  [200] PUT /quotations/5/status (accept)
+  → invoice id=3
+  OK  [201] POST /quotations (for reject test)
+  OK  [200] PUT /quotations/6/status (reject)
+
+━━━ 11. INVOICES ━━━
+  OK  [200] GET /invoices
+  OK  [200] GET /invoices/3
+
+━━━ 12. PAYMENTS ━━━
+  OK  [200] GET /invoices/3/payments
+  OK  [201] POST /invoices/3/payments
+  → payment id=3
+  OK  [200] GET /payments/3
+
+━━━ 13. INVENTORY LOG ━━━
+  OK  [200] GET /inventory/log
+  OK  [200] GET /inventory/log?variant_id=4
+
+━━━ 14. QUOTATION RETURN ━━━
+  OK  [200] PUT /quotations/5/status (return)
+
+━━━ 15. CLEANUP ━━━
+  FAIL [409] DELETE /variant-units/4
+       {"success": false, "message": "Variant-unit has quotation items and cannot be deleted"}
+  FAIL [409] DELETE /units/11
+       {"success": false, "message": "Unit is linked to variants and cannot be deleted"}
+  FAIL [500] DELETE /variants/4
+       {"success": false, "message": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ati_db`.`inventory_log`, CONSTRAINT `fk_invl
+  FAIL [500] DELETE /products/7
+       {"success": false, "message": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ati_db`.`inventory_log`, CONSTRAINT `fk_invl
+  OK  [204] DELETE /categories/12
+  FAIL [409] DELETE /customers/3
+       {"success": false, "message": "Customer has invoices and cannot be deleted"}
+
+============================================
+  RESULTS:  PASSED=51   FAILED=5
+============================================
+  Failures:
+    • DELETE /variant-units/4  [got 409, want 204]
+    • DELETE /units/11  [got 409, want 204]
+    • DELETE /variants/4  [got 500, want 204]
+    • DELETE /products/7  [got 500, want 204]
+    • DELETE /customers/3  [got 409, want 204]
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  /Applications/XAMPP/xamppfiles/bin/mysql -u root ati_db -e "[?2004l
+[0m[27m[24m[Jdquote> [K[?2004h   SELECT qi.id, qi.quotation_id, qi.variant_unit_id FROM quotation_items qi WHERE qi.variant_unit_id=4;[?2004l
+[0m[27m[24m[Jdquote> [K[?2004h   SELECT id, customer_id FROM quotations WHERE customer_id=3;[?2004l
+[0m[27m[24m[Jdquote> [K[?2004h   SELECT id FROM invoices WHERE customer_id=3;[?2004l
+[0m[27m[24m[Jdquote> [K[?2004h"" 2>&1[?2004l
++----+--------------+-----------------+
+| id | quotation_id | variant_unit_id |
++----+--------------+-----------------+
+|  5 |            5 |               4 |
+|  6 |            6 |               4 |
++----+--------------+-----------------+
+ERROR 1146 (42S02) at line 3: Table 'ati_db.quotations' doesn't exist
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  /Applications/XAMPP/xamppfiles/bin/mysql -u root ati_db -e "SHOW TABLES;" 2>&1[?2004l
++--------------------+
+| Tables_in_ati_db   |
++--------------------+
+| categories         |
+| customers          |
+| inventory_log      |
+| payments           |
+| product_variants   |
+| products           |
+| quotation_items    |
+| quotation_requests |
+| sales_invoices     |
+| units              |
+| users              |
+| variant_units      |
++--------------------+
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  python3 test_api.py 2>&1[?2004l
+Cleaning up stale test data…
+Cleanup done.
+
+
+━━━ 1. SYSTEM ━━━
+  OK  [200] GET /health
+  OK  [200] GET /spec
+
+━━━ 2. AUTH ━━━
+  OK  [200] POST /auth/login (valid)
+  🔑 token acquired
+  OK  [401] POST /auth/login (wrong password)
+  OK  [422] POST /auth/login (invalid email)
+  OK  [200] GET  /auth/me
+  OK  [200] POST /auth/refresh
+
+━━━ 3. USERS ━━━
+  OK  [200] GET /users
+  OK  [201] POST /users
+  → user id=10
+  OK  [200] GET /users/10
+  OK  [200] PUT /users/10
+  OK  [204] DELETE /users/10
+
+━━━ 4. CATEGORIES ━━━
+  OK  [200] GET /categories
+  OK  [201] POST /categories
+  → cat id=13
+  OK  [200] GET /categories/13
+  OK  [200] PUT /categories/13
+
+━━━ 5. PRODUCTS ━━━
+  OK  [200] GET /products
+  OK  [201] POST /products
+  → product id=8
+  OK  [200] GET /products/8
+  OK  [200] PUT /products/8
+
+━━━ 6. PRODUCT VARIANTS ━━━
+  OK  [200] GET /products/8/variants
+  OK  [201] POST /products/8/variants
+  → variant id=5
+  OK  [200] GET /variants/5
+  OK  [200] PUT /variants/5
+
+━━━ 7. UNITS ━━━
+  OK  [200] GET /units
+  OK  [201] POST /units
+  → unit id=12
+  OK  [200] GET /units/12
+  OK  [200] PUT /units/12
+
+━━━ 8. VARIANT-UNITS ━━━
+  OK  [200] GET /variants/5/units
+  OK  [201] POST /variants/5/units
+  → variant-unit id=5
+  OK  [200] GET /variant-units/5
+  OK  [200] PUT /variant-units/5
+
+━━━ 9. CUSTOMERS ━━━
+  OK  [200] GET /customers
+  OK  [201] POST /customers
+  → customer id=4
+  OK  [200] GET /customers/4
+  OK  [200] PUT /customers/4
+
+━━━ 10. QUOTATION REQUESTS ━━━
+  OK  [200] GET /quotations
+  OK  [201] POST /quotations
+  → quotation id=7
+  OK  [200] GET /quotations/7
+  OK  [200] PUT /quotations/7/status (accept)
+  → invoice id=4
+  OK  [201] POST /quotations (for reject test)
+  OK  [200] PUT /quotations/8/status (reject)
+
+━━━ 11. INVOICES ━━━
+  OK  [200] GET /invoices
+  OK  [200] GET /invoices/4
+
+━━━ 12. PAYMENTS ━━━
+  OK  [200] GET /invoices/4/payments
+  OK  [201] POST /invoices/4/payments
+  → payment id=4
+  OK  [200] GET /payments/4
+
+━━━ 13. INVENTORY LOG ━━━
+  OK  [200] GET /inventory/log
+  OK  [200] GET /inventory/log?variant_id=5
+
+━━━ 14. QUOTATION RETURN ━━━
+  OK  [200] PUT /quotations/7/status (return)
+
+━━━ 15. CLEANUP ━━━
+  FAIL [500] DELETE /variant-units/5
+       {"success": false, "message": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ati_db`.`inventory_log`, CONSTRAINT `fk_invl
+  FAIL [409] DELETE /units/12
+       {"success": false, "message": "Unit is linked to variants and cannot be deleted"}
+  FAIL [500] DELETE /variants/5
+       {"success": false, "message": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ati_db`.`inventory_log`, CONSTRAINT `fk_invl
+  FAIL [500] DELETE /products/8
+       {"success": false, "message": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ati_db`.`inventory_log`, CONSTRAINT `fk_invl
+  OK  [204] DELETE /categories/13
+  OK  [204] DELETE /customers/4
+
+============================================
+  RESULTS:  PASSED=52   FAILED=4
+============================================
+  Failures:
+    • DELETE /variant-units/5  [got 500, want 204]
+    • DELETE /units/12  [got 409, want 204]
+    • DELETE /variants/5  [got 500, want 204]
+    • DELETE /products/8  [got 500, want 204]
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  /Applications/XAMPP/xamppfiles/bin/mysql -u root ati_db -e "SELECT COUNT(*) FROM inventory_log [K  WHERE variant_id=5;" 2>&1[?2004l
+ERROR 1054 (42S22) at line 1: Unknown column 'variant_id' in 'where clause'
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h//Applications/XAMPP/xamppfiles/bin/mysql -u root ati_db -e "SET FOREIGN_KEY_CHECKS=0; DELETE FR [KOOM inventory_log WHERE variant_id=5; SET FOREIGN_KEY_CHECKS=1;" 2>&1[?2004l
+ERROR 1054 (42S22) at line 1: Unknown column 'variant_id' in 'where clause'
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h//Applications/XAMPP/xamppfiles/bin/mysql -u root ati_db -e "SELECT COUNT(*) FROM inventory_log  [KWWHERE variant_id=5;" 2>&1[?2004l
+ERROR 1054 (42S22) at line 1: Unknown column 'variant_id' in 'where clause'
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  /Applications/XAMPP/xamppfiles/bin/mysql -u root ati_db -e "DESCRIBE inventory_log;" 2>&1[?2004l
++-----------------+------------------------------------+------+-----+---------------------+----------------+
+| Field           | Type                               | Null | Key | Default             | Extra          |
++-----------------+------------------------------------+------+-----+---------------------+----------------+
+| id              | bigint(20) unsigned                | NO   | PRI | NULL                | auto_increment |
+| variant_unit_id | int(10) unsigned                   | NO   | MUL | NULL                |                |
+| quantity        | decimal(14,4)                      | NO   |     | NULL                |                |
+| action          | enum('handover','sold','returned') | NO   | MUL | NULL                |                |
+| related_id      | int(10) unsigned                   | YES  |     | NULL                |                |
+| user_id         | int(10) unsigned                   | YES  | MUL | NULL                |                |
+| note            | text                               | YES  |     | NULL                |                |
+| created_at      | timestamp                          | NO   | MUL | current_timestamp() |                |
++-----------------+------------------------------------+------+-----+---------------------+----------------+
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  python3 test_api.py 2>&1 | tail -40[?2004l
+  OK  [200] PUT /customers/5
+
+━━━ 10. QUOTATION REQUESTS ━━━
+  OK  [200] GET /quotations
+  OK  [201] POST /quotations
+  → quotation id=9
+  OK  [200] GET /quotations/9
+  OK  [200] PUT /quotations/9/status (accept)
+  → invoice id=5
+  OK  [201] POST /quotations (for reject test)
+  OK  [200] PUT /quotations/10/status (reject)
+
+━━━ 11. INVOICES ━━━
+  OK  [200] GET /invoices
+  OK  [200] GET /invoices/5
+
+━━━ 12. PAYMENTS ━━━
+  OK  [200] GET /invoices/5/payments
+  OK  [201] POST /invoices/5/payments
+  → payment id=5
+  OK  [200] GET /payments/5
+
+━━━ 13. INVENTORY LOG ━━━
+  OK  [200] GET /inventory/log
+  OK  [200] GET /inventory/log?variant_id=6
+
+━━━ 14. QUOTATION RETURN ━━━
+  OK  [200] PUT /quotations/9/status (return)
+
+━━━ 15. CLEANUP ━━━
+  OK  [204] DELETE /variant-units/6
+  OK  [204] DELETE /units/13
+  OK  [204] DELETE /variants/6
+  OK  [204] DELETE /products/9
+  OK  [204] DELETE /categories/14
+  OK  [204] DELETE /customers/5
+
+============================================
+  RESULTS:  PASSED=56   FAILED=0
+============================================
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h  python3 test_api.py 2>&1[?2004l
+Cleaning up stale test data…
+Cleanup done.
+
+
+━━━ 1. SYSTEM ━━━
+  OK  [200] GET /health
+  OK  [200] GET /spec
+
+━━━ 2. AUTH ━━━
+  OK  [200] POST /auth/login (valid)
+  🔑 token acquired
+  OK  [401] POST /auth/login (wrong password)
+  OK  [422] POST /auth/login (invalid email)
+  OK  [200] GET  /auth/me
+  OK  [200] POST /auth/refresh
+
+━━━ 3. USERS ━━━
+  OK  [200] GET /users
+  OK  [201] POST /users
+  → user id=12
+  OK  [200] GET /users/12
+  OK  [200] PUT /users/12
+  OK  [204] DELETE /users/12
+
+━━━ 4. CATEGORIES ━━━
+  OK  [200] GET /categories
+  OK  [201] POST /categories
+  → cat id=15
+  OK  [200] GET /categories/15
+  OK  [200] PUT /categories/15
+
+━━━ 5. PRODUCTS ━━━
+  OK  [200] GET /products
+  OK  [201] POST /products
+  → product id=10
+  OK  [200] GET /products/10
+  OK  [200] PUT /products/10
+
+━━━ 6. PRODUCT VARIANTS ━━━
+  OK  [200] GET /products/10/variants
+  OK  [201] POST /products/10/variants
+  → variant id=7
+  OK  [200] GET /variants/7
+  OK  [200] PUT /variants/7
+
+━━━ 7. UNITS ━━━
+  OK  [200] GET /units
+  OK  [201] POST /units
+  → unit id=14
+  OK  [200] GET /units/14
+  OK  [200] PUT /units/14
+
+━━━ 8. VARIANT-UNITS ━━━
+  OK  [200] GET /variants/7/units
+  OK  [201] POST /variants/7/units
+  → variant-unit id=7
+  OK  [200] GET /variant-units/7
+  OK  [200] PUT /variant-units/7
+
+━━━ 9. CUSTOMERS ━━━
+  OK  [200] GET /customers
+  OK  [201] POST /customers
+  → customer id=6
+  OK  [200] GET /customers/6
+  OK  [200] PUT /customers/6
+
+━━━ 10. QUOTATION REQUESTS ━━━
+  OK  [200] GET /quotations
+  OK  [201] POST /quotations
+  → quotation id=11
+  OK  [200] GET /quotations/11
+  OK  [200] PUT /quotations/11/status (accept)
+  → invoice id=6
+  OK  [201] POST /quotations (for reject test)
+  OK  [200] PUT /quotations/12/status (reject)
+
+━━━ 11. INVOICES ━━━
+  OK  [200] GET /invoices
+  OK  [200] GET /invoices/6
+
+━━━ 12. PAYMENTS ━━━
+  OK  [200] GET /invoices/6/payments
+  OK  [201] POST /invoices/6/payments
+  → payment id=6
+  OK  [200] GET /payments/6
+
+━━━ 13. INVENTORY LOG ━━━
+  OK  [200] GET /inventory/log
+  OK  [200] GET /inventory/log?variant_id=7
+
+━━━ 14. QUOTATION RETURN ━━━
+  OK  [200] PUT /quotations/11/status (return)
+
+━━━ 15. CLEANUP ━━━
+  OK  [204] DELETE /variant-units/7
+  OK  [204] DELETE /units/14
+  OK  [204] DELETE /variants/7
+  OK  [204] DELETE /products/10
+  OK  [204] DELETE /categories/15
+  OK  [204] DELETE /customers/6
+
+============================================
+  RESULTS:  PASSED=56   FAILED=0
+============================================
+[1m[7m%[27m[1m[0m                                                                                                                                              [0m[27m[24m[Jbarkotullah@Barkotullahs-MacBook-Pro restAPI % [K[?2004h
