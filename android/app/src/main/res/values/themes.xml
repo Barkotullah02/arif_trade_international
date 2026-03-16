@@ -1,0 +1,12 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bridge XML theme for the Compose app. -->
+    <!-- Compose takes over rendering; this only needs to suppress the ActionBar -->
+    <!-- and allow edge-to-edge so enableEdgeToEdge() works correctly. -->
+    <style name="Base.Theme.ArifTradeInternational" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.ArifTradeInternational" parent="Base.Theme.ArifTradeInternational" />
+</resources>

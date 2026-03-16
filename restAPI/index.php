@@ -116,9 +116,9 @@ $router->put('/variant-units/{id}',             [VariantUnitController::class, '
 $router->delete('/variant-units/{id}',          [VariantUnitController::class, 'destroy'], $admin);
 
 // ── Customers (admin manages; editors/viewers read) ───────────
-$router->get('/customers',          [CustomerController::class, 'index'],   $editorUp);
+$router->get('/customers',          [CustomerController::class, 'index'],   $allRoles);
 $router->post('/customers',         [CustomerController::class, 'store'],   $admin);
-$router->get('/customers/{id}',     [CustomerController::class, 'show'],    $editorUp);
+$router->get('/customers/{id}',     [CustomerController::class, 'show'],    $allRoles);
 $router->put('/customers/{id}',     [CustomerController::class, 'update'],  $admin);
 $router->delete('/customers/{id}',  [CustomerController::class, 'destroy'], $admin);
 

@@ -7,6 +7,7 @@ class Request
 {
     public string $method;
     public string $path;
+    public ?array $user = null;
     private array $body    = [];
     private array $query   = [];
     private array $headers = [];
