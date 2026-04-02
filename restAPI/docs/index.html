@@ -264,8 +264,8 @@ async function loadSpec() {
       `<div id="error-box">
         <strong>Could not load API spec.</strong><br/>
         <small>${e.message}</small><br/><br/>
-        Make sure XAMPP is running and the API is accessible at:<br/>
-        <code>${BASE_URL}/docs</code>
+        Make sure Apache2/PHP are running and the API spec endpoint is accessible at:<br/>
+        <code>${BASE_URL}/spec</code>
       </div>`;
   }
 }
