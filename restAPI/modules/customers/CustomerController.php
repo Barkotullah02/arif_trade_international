@@ -70,6 +70,100 @@ class CustomerController
         Response::success(castRow($customer, ['id']));
     }
 
+    /** GET /customers/{id}/ledger?month=YYYY-MM&status=active&page=1&per_page=20 */
+    public static function ledger(Request $req): void
+    {
+        $customerId = (int)$req->params['id'];
+        $customer = Database::fetchOne(
+            'SELECT id, name, type, phone, email, address, created_at, updated_at
+             FROM customers WHERE id = ?',
+            [$customerId]
+        );
+        if (!$customer) {
+            Response::notFound('Customer not found');
+        }
+
+        $filters = sanitiseInput([
+            'month'    => $req->query('month'),
+            'status'   => $req->query('status'),
+            'page'     => $req->query('page', 1),
+            'per_page' => $req->query('per_page', 20),
+        ]);
+        (new Validator())->validateOrFail($filters, [
+            'status'   => 'nullable|in:active,returned,void',
+            'page'     => 'nullable|integer|min:1',
+            'per_page' => 'nullable|integer|min:1|max:200',
+        ]);
+
+        $from = null;
+        $to = null;
+        $month = null;
+        if (!empty($filters['month'])) {
+            if (!preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', (string)$filters['month'])) {
+                Response::error('month must be in YYYY-MM format', 422);
+            }
+            $month = (string)$filters['month'];
+            $from = $month . '-01';
+            $to = date('Y-m-t', strtotime($from));
+        }
+
+        $where = ['si.customer_id = ?'];
+        $params = [$customerId];
+
+        if (!empty($filters['status'])) {
+            $where[] = 'si.status = ?';
+            $params[] = $filters['status'];
+        }
+        if ($from !== null && $to !== null) {
+            $where[] = 'si.date >= ?';
+            $params[] = $from;
+            $where[] = 'si.date <= ?';
+            $params[] = $to;
+        }
+
+        $w = implode(' AND ', $where);
+
+        $summary = Database::fetchOne(
+            "SELECT
+                COUNT(*) AS invoice_count,
+                COALESCE(SUM(si.total_amount), 0) AS sold_amount,
+                COALESCE(SUM((SELECT COALESCE(SUM(p.amount_paid), 0) FROM payments p WHERE p.invoice_id = si.id)), 0) AS paid_amount,
+                COALESCE(SUM(si.total_amount - (SELECT COALESCE(SUM(p.amount_paid), 0) FROM payments p WHERE p.invoice_id = si.id)), 0) AS due_amount
+             FROM sales_invoices si
+             WHERE $w",
+            $params
+        ) ?: ['invoice_count' => 0, 'sold_amount' => 0, 'paid_amount' => 0, 'due_amount' => 0];
+
+        $sql = "SELECT
+                    si.id,
+                    si.quotation_id,
+                    si.date,
+                    si.status,
+                    si.total_amount,
+                    COALESCE((SELECT SUM(p.amount_paid) FROM payments p WHERE p.invoice_id = si.id), 0) AS paid,
+                    si.total_amount - COALESCE((SELECT SUM(p.amount_paid) FROM payments p WHERE p.invoice_id = si.id), 0) AS due,
+                    si.created_at
+                FROM sales_invoices si
+                WHERE $w
+                ORDER BY si.date DESC, si.id DESC";
+
+        $invoiceRows = paginate($sql, $params, (int)$filters['page'], (int)$filters['per_page']);
+        $invoiceRows['data'] = array_map(
+            fn($r) => castRow($r, ['id', 'quotation_id'], ['total_amount', 'paid', 'due']),
+            $invoiceRows['data']
+        );
+
+        Response::success([
+            'customer' => castRow($customer, ['id']),
+            'filters' => [
+                'month' => $month,
+                'status' => $filters['status'] ?? null,
+            ],
+            'totals' => castRow($summary, ['invoice_count'], ['sold_amount', 'paid_amount', 'due_amount']),
+            'invoices' => $invoiceRows,
+        ]);
+    }
+
     /** PUT /customers/{id} */
     public static function update(Request $req): void
     {

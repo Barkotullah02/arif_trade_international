@@ -33,6 +33,8 @@ require_once BASE_PATH . '/modules/quotations/QuotationController.php';
 require_once BASE_PATH . '/modules/invoices/InvoiceController.php';
 require_once BASE_PATH . '/modules/payments/PaymentController.php';
 require_once BASE_PATH . '/modules/inventory/InventoryController.php';
+require_once BASE_PATH . '/modules/lots/LotController.php';
+require_once BASE_PATH . '/modules/analytics/AnalyticsController.php';
 require_once BASE_PATH . '/modules/docs/DocsController.php';
 
 // ── Global error handler ─────────────────────────────────────
@@ -118,30 +120,59 @@ $router->delete('/variant-units/{id}',          [VariantUnitController::class, '
 // ── Customers (admin manages; editors/viewers read) ───────────
 $router->get('/customers',          [CustomerController::class, 'index'],   $allRoles);
 $router->post('/customers',         [CustomerController::class, 'store'],   $admin);
+$router->get('/customers/{id}/ledger', [CustomerController::class, 'ledger'], $admin);
 $router->get('/customers/{id}',     [CustomerController::class, 'show'],    $allRoles);
 $router->put('/customers/{id}',     [CustomerController::class, 'update'],  $admin);
 $router->delete('/customers/{id}',  [CustomerController::class, 'destroy'], $admin);
 
 // ── Quotation Requests ────────────────────────────────────────
-// salesman: can create + list own; editor+: can list all + update status
-$router->get('/quotations',              [QuotationController::class, 'index'],  $allRoles);
-$router->post('/quotations',             [QuotationController::class, 'store'],
-    [AuthMiddleware::auth(), AuthMiddleware::role('superadmin', 'editor', 'salesman')]);
-$router->get('/quotations/{id}',         [QuotationController::class, 'show'],   $allRoles);
-$router->put('/quotations/{id}/status',  [QuotationController::class, 'updateStatus'], $editorUp);
+// superadmin full CRUD + status workflow
+$router->get('/quotations',              [QuotationController::class, 'index'],  $admin);
+$router->post('/quotations',             [QuotationController::class, 'store'],  $admin);
+$router->get('/quotations/{id}',         [QuotationController::class, 'show'],   $admin);
+$router->put('/quotations/{id}',         [QuotationController::class, 'update'], $admin);
+$router->delete('/quotations/{id}',      [QuotationController::class, 'destroy'],$admin);
+$router->post('/quotations/{id}/lot-assignments', [LotController::class, 'assignToQuotation'], $admin);
+$router->put('/quotations/{id}/status',  [QuotationController::class, 'updateStatus'], $admin);
 
 // ── Invoices ──────────────────────────────────────────────────
-$router->get('/invoices',          [InvoiceController::class, 'index'],  $editorUp);
-$router->get('/invoices/{id}',     [InvoiceController::class, 'show'],   $editorUp);
+$router->get('/invoices',          [InvoiceController::class, 'index'],   $admin);
+$router->post('/invoices',         [InvoiceController::class, 'store'],   $admin);
+$router->get('/invoices/due',      [InvoiceController::class, 'due'],     $admin);
+$router->get('/invoices/{id}',     [InvoiceController::class, 'show'],    $admin);
+$router->put('/invoices/{id}',     [InvoiceController::class, 'update'],  $admin);
+$router->delete('/invoices/{id}',  [InvoiceController::class, 'destroy'], $admin);
 
 // ── Payments ─────────────────────────────────────────────────
-$router->get('/invoices/{invoiceId}/payments',  [PaymentController::class, 'index'],  $editorUp);
-$router->post('/invoices/{invoiceId}/payments', [PaymentController::class, 'store'],  $editorUp);
-$router->get('/payments/{id}',                  [PaymentController::class, 'show'],   $editorUp);
+$router->get('/invoices/{invoiceId}/payments',  [PaymentController::class, 'index'],   $admin);
+$router->post('/invoices/{invoiceId}/payments', [PaymentController::class, 'store'],   $admin);
+$router->get('/payments/{id}',                  [PaymentController::class, 'show'],    $admin);
+$router->put('/payments/{id}',                  [PaymentController::class, 'update'],  $admin);
 $router->delete('/payments/{id}',               [PaymentController::class, 'destroy'], $admin);
 
 // ── Inventory Log ─────────────────────────────────────────────
-$router->get('/inventory/log', [InventoryController::class, 'log'], $viewerUp);
+$router->get('/inventory',         [InventoryController::class, 'index'],   $admin);
+$router->post('/inventory',        [InventoryController::class, 'store'],   $admin);
+$router->get('/inventory/log',     [InventoryController::class, 'log'],     $admin);
+$router->get('/inventory/{id}',    [InventoryController::class, 'show'],    $admin);
+$router->put('/inventory/{id}',    [InventoryController::class, 'update'],  $admin);
+$router->delete('/inventory/{id}', [InventoryController::class, 'destroy'], $admin);
+
+// ── Lots ──────────────────────────────────────────────────────
+$router->get('/lots',              [LotController::class, 'index'],        $admin);
+$router->post('/lots',             [LotController::class, 'store'],        $admin);
+$router->get('/lots/autocomplete', [LotController::class, 'autocomplete'], $admin);
+$router->get('/lots/stats',        [LotController::class, 'stats'],        $admin);
+$router->get('/lots/expiring-soon',[LotController::class, 'expiringSoon'], $admin);
+$router->get('/lots/{id}',         [LotController::class, 'show'],         $admin);
+$router->put('/lots/{id}',         [LotController::class, 'update'],       $admin);
+$router->delete('/lots/{id}',      [LotController::class, 'destroy'],      $admin);
+$router->post('/lots/{id}/stocks', [LotController::class, 'addStock'],     $admin);
+
+// ── Analytics (Admin Dashboard) ───────────────────────────────
+$router->get('/analytics/summary',                [AnalyticsController::class, 'summary'],              $admin);
+$router->get('/analytics/top-products',           [AnalyticsController::class, 'topProducts'],          $admin);
+$router->get('/analytics/customer-monthly-sales', [AnalyticsController::class, 'customerMonthlySales'], $admin);
 
 // ── Dispatch ──────────────────────────────────────────────────
 $router->dispatch($request);

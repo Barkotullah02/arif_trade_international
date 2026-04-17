@@ -48,12 +48,14 @@ CREATE TABLE IF NOT EXISTS products (
     category_id  INT UNSIGNED          DEFAULT NULL,
     product_code VARCHAR(50)  NOT NULL,
     description  TEXT                  DEFAULT NULL,
+    expiry_date  DATE                  DEFAULT NULL,
     is_active    TINYINT(1)   NOT NULL DEFAULT 1,
     created_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE KEY uq_products_code (product_code),
     KEY          idx_products_category (category_id),
+    KEY          idx_products_expiry_date (expiry_date),
     CONSTRAINT fk_products_category
         FOREIGN KEY (category_id) REFERENCES categories (id)
             ON DELETE SET NULL ON UPDATE CASCADE
@@ -267,6 +269,75 @@ CREATE TABLE IF NOT EXISTS payments (
     CONSTRAINT fk_payments_received_by
         FOREIGN KEY (received_by) REFERENCES users (id)
             ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- 13. LOTS (product-level lots/batches)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS lots (
+    id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    product_id  INT UNSIGNED NOT NULL,
+    name        VARCHAR(120) NOT NULL,
+    description VARCHAR(255)          DEFAULT NULL,
+    expiry_date DATE                  DEFAULT NULL,
+    is_active   TINYINT(1)   NOT NULL DEFAULT 1,
+    created_by  INT UNSIGNED          DEFAULT NULL,
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_lots_product_name (product_id, name),
+    KEY idx_lots_product (product_id),
+    KEY idx_lots_active (is_active),
+    KEY idx_lots_expiry_date (expiry_date),
+    CONSTRAINT fk_lots_product
+        FOREIGN KEY (product_id) REFERENCES products (id)
+            ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_lots_created_by
+        FOREIGN KEY (created_by) REFERENCES users (id)
+            ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- 14. LOT STOCKS (variant-unit quantity per lot)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS lot_stocks (
+    id             INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    lot_id         INT UNSIGNED  NOT NULL,
+    variant_unit_id INT UNSIGNED NOT NULL,
+    quantity_total DECIMAL(14,4) NOT NULL DEFAULT 0.0000,
+    quantity_sold  DECIMAL(14,4) NOT NULL DEFAULT 0.0000,
+    created_at     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_lot_stocks_lot_variant_unit (lot_id, variant_unit_id),
+    KEY idx_lot_stocks_lot (lot_id),
+    KEY idx_lot_stocks_variant_unit (variant_unit_id),
+    CONSTRAINT fk_lot_stocks_lot
+        FOREIGN KEY (lot_id) REFERENCES lots (id)
+            ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_lot_stocks_variant_unit
+        FOREIGN KEY (variant_unit_id) REFERENCES variant_units (id)
+            ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- 15. LOT ASSIGNMENTS (explicit lot split per quotation item)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS lot_assignments (
+    id                INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    quotation_item_id INT UNSIGNED  NOT NULL,
+    lot_id            INT UNSIGNED  NOT NULL,
+    quantity          DECIMAL(14,4) NOT NULL,
+    created_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_lot_assignments_qi (quotation_item_id),
+    KEY idx_lot_assignments_lot (lot_id),
+    CONSTRAINT fk_lot_assignments_qi
+        FOREIGN KEY (quotation_item_id) REFERENCES quotation_items (id)
+            ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_lot_assignments_lot
+        FOREIGN KEY (lot_id) REFERENCES lots (id)
+            ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

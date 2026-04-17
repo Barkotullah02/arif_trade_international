@@ -50,6 +50,32 @@ class QuotationService
             $totalAmount = 0.0;
 
             foreach ($items as $item) {
+                $assignments = Database::fetchAll(
+                    'SELECT la.id, la.lot_id, la.quantity, l.name AS lot_name
+                     FROM lot_assignments la
+                     JOIN lots l ON l.id = la.lot_id
+                     WHERE la.quotation_item_id = ?
+                     ORDER BY la.id',
+                    [(int)$item['id']]
+                );
+                if (empty($assignments)) {
+                    throw new RuntimeException(
+                        "Lot assignments are required for quotation item #{$item['id']}",
+                        422
+                    );
+                }
+
+                $assignedQty = 0.0;
+                foreach ($assignments as $assignment) {
+                    $assignedQty += (float)$assignment['quantity'];
+                }
+                if (abs($assignedQty - (float)$item['quantity']) > 0.0001) {
+                    throw new RuntimeException(
+                        "Assigned lot quantities must equal item quantity for quotation item #{$item['id']}",
+                        422
+                    );
+                }
+
                 // Lock + read stock row
                 $vu = Database::fetchOne(
                     'SELECT id, stock_quantity FROM variant_units WHERE id = ? FOR UPDATE',
@@ -65,6 +91,49 @@ class QuotationService
                         "Insufficient stock for variant-unit #{$item['variant_unit_id']}. " .
                         "Available: {$vu['stock_quantity']}, Requested: {$item['quantity']}",
                         422
+                    );
+                }
+
+                foreach ($assignments as $assignment) {
+                    $stock = Database::fetchOne(
+                        'SELECT ls.id, ls.quantity_total, ls.quantity_sold
+                         FROM lot_stocks ls
+                         JOIN lots l ON l.id = ls.lot_id
+                         WHERE ls.lot_id = ? AND ls.variant_unit_id = ? AND l.is_active = 1
+                         FOR UPDATE',
+                        [(int)$assignment['lot_id'], (int)$item['variant_unit_id']]
+                    );
+                    if (!$stock) {
+                        throw new RuntimeException(
+                            "Lot #{$assignment['lot_id']} is not available for variant-unit #{$item['variant_unit_id']}",
+                            422
+                        );
+                    }
+
+                    $available = (float)$stock['quantity_total'] - (float)$stock['quantity_sold'];
+                    if ($available + 0.0001 < (float)$assignment['quantity']) {
+                        throw new RuntimeException(
+                            "Insufficient lot stock for lot #{$assignment['lot_id']}. Available: {$available}, Requested: {$assignment['quantity']}",
+                            422
+                        );
+                    }
+
+                    Database::query(
+                        'UPDATE lot_stocks SET quantity_sold = quantity_sold + ? WHERE id = ?',
+                        [(float)$assignment['quantity'], (int)$stock['id']]
+                    );
+
+                    Database::query(
+                        'INSERT INTO inventory_log (variant_unit_id, quantity, action, related_id, user_id, note)
+                         VALUES (?, ?, ?, ?, ?, ?)',
+                        [
+                            (int)$item['variant_unit_id'],
+                            -((float)$assignment['quantity']),
+                            'sold',
+                            $quotationId,
+                            $editorId,
+                            "Lot #{$assignment['lot_id']} ({$assignment['lot_name']}) sold via quotation #$quotationId",
+                        ]
                     );
                 }
 
@@ -137,16 +206,32 @@ class QuotationService
             }
 
             $items = Database::fetchAll(
-                'SELECT variant_unit_id, quantity FROM quotation_items WHERE quotation_id = ?',
+                'SELECT id, variant_unit_id, quantity FROM quotation_items WHERE quotation_id = ?',
                 [$quotationId]
             );
 
             foreach ($items as $item) {
+                $assignments = Database::fetchAll(
+                    'SELECT la.lot_id, la.quantity
+                     FROM lot_assignments la
+                     WHERE la.quotation_item_id = ?',
+                    [(int)$item['id']]
+                );
+
                 // Restore stock
                 Database::query(
                     'UPDATE variant_units SET stock_quantity = stock_quantity + ? WHERE id = ?',
                     [$item['quantity'], $item['variant_unit_id']]
                 );
+
+                foreach ($assignments as $assignment) {
+                    Database::query(
+                        'UPDATE lot_stocks
+                         SET quantity_sold = GREATEST(quantity_sold - ?, 0)
+                         WHERE lot_id = ? AND variant_unit_id = ?',
+                        [(float)$assignment['quantity'], (int)$assignment['lot_id'], (int)$item['variant_unit_id']]
+                    );
+                }
 
                 // Log returned
                 Database::query(

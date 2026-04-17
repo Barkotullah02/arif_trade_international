@@ -12,6 +12,19 @@ class QuotationController
      */
     public static function index(Request $req): void
     {
+        $filters = sanitiseInput([
+            'status'      => $req->query('status'),
+            'salesman_id' => $req->query('salesman_id'),
+            'page'        => $req->query('page', 1),
+            'per_page'    => $req->query('per_page', 20),
+        ]);
+        (new Validator())->validateOrFail($filters, [
+            'status'      => 'nullable|in:pending,accepted,rejected,returned',
+            'salesman_id' => 'nullable|integer',
+            'page'        => 'nullable|integer|min:1',
+            'per_page'    => 'nullable|integer|min:1|max:200',
+        ]);
+
         $role    = $req->user['role'];
         $userId  = (int)$req->user['sub'];
         $where   = ['1=1'];
@@ -21,12 +34,12 @@ class QuotationController
         if ($role === 'salesman') {
             $where[] = 'qr.salesman_id = ?';
             $params[] = $userId;
-        } elseif ($sid = $req->query('salesman_id')) {
+        } elseif ($sid = $filters['salesman_id']) {
             $where[] = 'qr.salesman_id = ?';
             $params[] = $sid;
         }
 
-        if ($status = $req->query('status')) {
+        if ($status = $filters['status']) {
             $where[] = 'qr.status = ?';
             $params[] = $status;
         }
@@ -41,7 +54,7 @@ class QuotationController
                 WHERE $w
                 ORDER BY qr.requested_at DESC";
 
-        $result         = paginate($sql, $params, (int)$req->query('page', 1), (int)$req->query('per_page', 20));
+        $result         = paginate($sql, $params, (int)$filters['page'], (int)$filters['per_page']);
         $result['data'] = array_map(fn($r) => castRow($r, ['id', 'salesman_id', 'customer_id']), $result['data']);
         Response::success($result);
     }
@@ -52,12 +65,16 @@ class QuotationController
      */
     public static function store(Request $req): void
     {
-        $data = $req->all();
+        $data = sanitiseInput($req->all());
         (new Validator())->validateOrFail($data, [
             'items'       => 'required|array',
             'customer_id' => 'nullable|integer',
             'note'        => 'nullable|string',
         ]);
+
+        if (isset($data['customer_id']) && !Database::fetchOne('SELECT id FROM customers WHERE id = ?', [$data['customer_id']])) {
+            Response::notFound('Customer not found');
+        }
 
         if (empty($data['items'])) Response::error('Quotation must have at least one item', 422);
 
@@ -71,6 +88,35 @@ class QuotationController
             }
             if (!Database::fetchOne('SELECT id FROM variant_units WHERE id = ?', [$item['variant_unit_id']])) {
                 Response::error("Variant-unit #{$item['variant_unit_id']} not found", 404);
+            }
+
+            if (isset($item['lots'])) {
+                if (!is_array($item['lots']) || empty($item['lots'])) {
+                    Response::error("Item $i lots must be a non-empty array when provided", 422);
+                }
+                $assigned = 0.0;
+                foreach ($item['lots'] as $j => $lot) {
+                    if (empty($lot['lot_id']) || !isset($lot['quantity'])) {
+                        Response::error("Item $i lot $j requires lot_id and quantity", 422);
+                    }
+                    if ((float)$lot['quantity'] <= 0) {
+                        Response::error("Item $i lot $j quantity must be positive", 422);
+                    }
+                    $valid = Database::fetchOne(
+                        'SELECT ls.id
+                         FROM lot_stocks ls
+                         JOIN lots l ON l.id = ls.lot_id
+                         WHERE l.id = ? AND ls.variant_unit_id = ? AND l.is_active = 1',
+                        [(int)$lot['lot_id'], (int)$item['variant_unit_id']]
+                    );
+                    if (!$valid) {
+                        Response::error("Item $i lot #{$lot['lot_id']} is invalid for the selected variant-unit", 422);
+                    }
+                    $assigned += (float)$lot['quantity'];
+                }
+                if (abs($assigned - (float)$item['quantity']) > 0.0001) {
+                    Response::error("Item $i lot quantities must equal item quantity", 422);
+                }
             }
         }
 
@@ -94,10 +140,140 @@ class QuotationController
                      VALUES (?, ?, ?, ?)',
                     [$quotationId, $item['variant_unit_id'], $item['quantity'], $vu['unit_price']]
                 );
+                $qiId = (int)Database::lastInsertId();
+
+                if (isset($item['lots'])) {
+                    foreach ($item['lots'] as $lot) {
+                        Database::query(
+                            'INSERT INTO lot_assignments (quotation_item_id, lot_id, quantity)
+                             VALUES (?, ?, ?)',
+                            [$qiId, (int)$lot['lot_id'], (float)$lot['quantity']]
+                        );
+                    }
+                }
             }
 
             Database::commit();
             Response::created(['id' => $quotationId], 'Quotation created');
+        } catch (Throwable $e) {
+            Database::rollback();
+            throw $e;
+        }
+    }
+
+    /** PUT /quotations/{id} */
+    public static function update(Request $req): void
+    {
+        $quotationId = (int)$req->params['id'];
+        $quote = Database::fetchOne(
+            'SELECT id, status, customer_id, note FROM quotation_requests WHERE id = ?',
+            [$quotationId]
+        );
+        if (!$quote) {
+            Response::notFound('Quotation not found');
+        }
+        if ($quote['status'] !== 'pending') {
+            Response::error('Only pending quotations can be updated', 409);
+        }
+
+        $data = sanitiseInput($req->all());
+        (new Validator())->validateOrFail($data, [
+            'customer_id' => 'nullable|integer',
+            'note'        => 'nullable|string',
+            'items'       => 'nullable|array',
+        ]);
+
+        if (isset($data['customer_id']) && !Database::fetchOne('SELECT id FROM customers WHERE id = ?', [$data['customer_id']])) {
+            Response::notFound('Customer not found');
+        }
+
+        if (array_key_exists('items', $data)) {
+            if (empty($data['items'])) {
+                Response::error('Quotation must have at least one item', 422);
+            }
+            foreach ($data['items'] as $i => $item) {
+                if (empty($item['variant_unit_id']) || !isset($item['quantity'])) {
+                    Response::error("Item $i missing variant_unit_id or quantity", 422);
+                }
+                if ((float)$item['quantity'] <= 0) {
+                    Response::error("Item $i quantity must be positive", 422);
+                }
+                if (!Database::fetchOne('SELECT id FROM variant_units WHERE id = ?', [$item['variant_unit_id']])) {
+                    Response::error("Variant-unit #{$item['variant_unit_id']} not found", 404);
+                }
+
+                if (isset($item['lots'])) {
+                    if (!is_array($item['lots']) || empty($item['lots'])) {
+                        Response::error("Item $i lots must be a non-empty array when provided", 422);
+                    }
+                    $assigned = 0.0;
+                    foreach ($item['lots'] as $j => $lot) {
+                        if (empty($lot['lot_id']) || !isset($lot['quantity'])) {
+                            Response::error("Item $i lot $j requires lot_id and quantity", 422);
+                        }
+                        if ((float)$lot['quantity'] <= 0) {
+                            Response::error("Item $i lot $j quantity must be positive", 422);
+                        }
+                        $valid = Database::fetchOne(
+                            'SELECT ls.id
+                             FROM lot_stocks ls
+                             JOIN lots l ON l.id = ls.lot_id
+                             WHERE l.id = ? AND ls.variant_unit_id = ? AND l.is_active = 1',
+                            [(int)$lot['lot_id'], (int)$item['variant_unit_id']]
+                        );
+                        if (!$valid) {
+                            Response::error("Item $i lot #{$lot['lot_id']} is invalid for the selected variant-unit", 422);
+                        }
+                        $assigned += (float)$lot['quantity'];
+                    }
+                    if (abs($assigned - (float)$item['quantity']) > 0.0001) {
+                        Response::error("Item $i lot quantities must equal item quantity", 422);
+                    }
+                }
+            }
+        }
+
+        Database::beginTransaction();
+        try {
+            $sets = [];
+            $params = [];
+            if (array_key_exists('customer_id', $data)) { $sets[] = 'customer_id = ?'; $params[] = $data['customer_id']; }
+            if (array_key_exists('note', $data)) { $sets[] = 'note = ?'; $params[] = $data['note']; }
+
+            if (!empty($sets)) {
+                $params[] = $quotationId;
+                Database::query('UPDATE quotation_requests SET ' . implode(', ', $sets) . ' WHERE id = ?', $params);
+            }
+
+            if (array_key_exists('items', $data)) {
+                Database::query('DELETE FROM quotation_items WHERE quotation_id = ?', [$quotationId]);
+                foreach ($data['items'] as $item) {
+                    $vu = Database::fetchOne('SELECT unit_price FROM variant_units WHERE id = ?', [$item['variant_unit_id']]);
+                    Database::query(
+                        'INSERT INTO quotation_items (quotation_id, variant_unit_id, quantity, unit_price)
+                         VALUES (?, ?, ?, ?)',
+                        [$quotationId, $item['variant_unit_id'], $item['quantity'], $vu['unit_price']]
+                    );
+                    $qiId = (int)Database::lastInsertId();
+
+                    if (isset($item['lots'])) {
+                        foreach ($item['lots'] as $lot) {
+                            Database::query(
+                                'INSERT INTO lot_assignments (quotation_item_id, lot_id, quantity)
+                                 VALUES (?, ?, ?)',
+                                [$qiId, (int)$lot['lot_id'], (float)$lot['quantity']]
+                            );
+                        }
+                    }
+                }
+            }
+
+            if (empty($sets) && !array_key_exists('items', $data)) {
+                Response::error('Nothing to update', 400);
+            }
+
+            Database::commit();
+            Response::success(null, 'Quotation updated');
         } catch (Throwable $e) {
             Database::rollback();
             throw $e;
@@ -142,6 +318,18 @@ class QuotationController
         foreach ($quote['items'] as &$item) {
             $item['attributes'] = json_decode($item['attributes'], true);
             $item = castRow($item, ['id', 'variant_unit_id'], ['quantity', 'unit_price']);
+            $item['lots'] = Database::fetchAll(
+                'SELECT la.id, la.lot_id, la.quantity, l.name AS lot_name
+                 FROM lot_assignments la
+                 JOIN lots l ON l.id = la.lot_id
+                 WHERE la.quotation_item_id = ?
+                 ORDER BY la.id',
+                [(int)$item['id']]
+            );
+            $item['lots'] = array_map(
+                fn($r) => castRow($r, ['id', 'lot_id'], ['quantity']),
+                $item['lots']
+            );
         }
 
         Response::success(castRow($quote, ['id', 'salesman_id', 'customer_id', 'editor_id']));
@@ -179,6 +367,42 @@ class QuotationController
             case 'rejected':
                 QuotationService::reject($quotationId, $editorId);
                 Response::success(null, 'Quotation rejected');
+        }
+    }
+
+    /** DELETE /quotations/{id} */
+    public static function destroy(Request $req): void
+    {
+        $quotationId = (int)$req->params['id'];
+        $quote = Database::fetchOne(
+            'SELECT id, status FROM quotation_requests WHERE id = ?',
+            [$quotationId]
+        );
+        if (!$quote) {
+            Response::notFound('Quotation not found');
+        }
+
+        if ($quote['status'] !== 'pending') {
+            Response::error('Only pending quotations can be deleted', 409);
+        }
+
+        if ((int)Database::fetchScalar('SELECT COUNT(*) FROM sales_invoices WHERE quotation_id = ?', [$quotationId]) > 0) {
+            Response::error('Quotation already has an invoice and cannot be deleted', 409);
+        }
+
+        Database::beginTransaction();
+        try {
+            $itemIds = Database::fetchAll('SELECT id FROM quotation_items WHERE quotation_id = ?', [$quotationId]);
+            foreach ($itemIds as $row) {
+                Database::query('DELETE FROM lot_assignments WHERE quotation_item_id = ?', [(int)$row['id']]);
+            }
+            Database::query('DELETE FROM quotation_items WHERE quotation_id = ?', [$quotationId]);
+            Database::query('DELETE FROM quotation_requests WHERE id = ?', [$quotationId]);
+            Database::commit();
+            Response::noContent();
+        } catch (Throwable $e) {
+            Database::rollback();
+            throw $e;
         }
     }
 }

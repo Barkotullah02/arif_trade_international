@@ -30,6 +30,9 @@ class ProductController
 
         $w   = implode(' AND ', $where);
         $sql = "SELECT p.id, p.name, p.product_code, p.description, p.is_active,
+                   p.expiry_date,
+                   (p.expiry_date IS NOT NULL AND p.expiry_date < CURDATE()) AS is_expired,
+                   (p.expiry_date IS NOT NULL AND p.expiry_date >= CURDATE() AND p.expiry_date <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH)) AS is_expiring_soon,
                        p.created_at, c.id AS category_id, c.name AS category_name
                 FROM products p
                 LEFT JOIN categories c ON c.id = p.category_id
@@ -37,7 +40,7 @@ class ProductController
                 ORDER BY p.id DESC";
 
         $result         = paginate($sql, $params, (int)$req->query('page', 1), (int)$req->query('per_page', 20));
-        $result['data'] = array_map(fn($r) => castRow($r, ['id', 'category_id'], [], ['is_active']), $result['data']);
+        $result['data'] = array_map(fn($r) => castRow($r, ['id', 'category_id'], [], ['is_active', 'is_expired', 'is_expiring_soon']), $result['data']);
         Response::success($result);
     }
 
@@ -49,13 +52,14 @@ class ProductController
             'name'        => 'required|string|max:200',
             'category_id' => 'nullable|integer',
             'description' => 'nullable|string',
+            'expiry_date' => 'nullable|date',
         ]);
 
         $code = generateProductCode();
 
         Database::query(
-            'INSERT INTO products (name, category_id, product_code, description) VALUES (?, ?, ?, ?)',
-            [$data['name'], $data['category_id'] ?: null, $code, $data['description'] ?? null]
+            'INSERT INTO products (name, category_id, product_code, description, expiry_date) VALUES (?, ?, ?, ?, ?)',
+            [$data['name'], $data['category_id'] ?: null, $code, $data['description'] ?? null, $data['expiry_date'] ?? null]
         );
 
         Response::created([
@@ -72,6 +76,9 @@ class ProductController
     {
         $product = Database::fetchOne(
             'SELECT p.id, p.name, p.product_code, p.description, p.is_active,
+                    p.expiry_date,
+                    (p.expiry_date IS NOT NULL AND p.expiry_date < CURDATE()) AS is_expired,
+                    (p.expiry_date IS NOT NULL AND p.expiry_date >= CURDATE() AND p.expiry_date <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH)) AS is_expiring_soon,
                     p.created_at, p.updated_at,
                     c.id AS category_id, c.name AS category_name
              FROM products p
@@ -103,7 +110,7 @@ class ProductController
             );
         }
 
-        $product             = castRow($product, ['id', 'category_id'], [], ['is_active']);
+        $product             = castRow($product, ['id', 'category_id'], [], ['is_active', 'is_expired', 'is_expiring_soon']);
         $product['variants'] = $variants;
         Response::success($product);
     }
@@ -120,6 +127,7 @@ class ProductController
             'name'        => 'nullable|string|max:200',
             'category_id' => 'nullable|integer',
             'description' => 'nullable|string',
+            'expiry_date' => 'nullable|date',
             'is_active'   => 'nullable|boolean',
         ]);
 
@@ -127,6 +135,7 @@ class ProductController
         if (isset($data['name']))        { $sets[] = 'name = ?';        $params[] = $data['name']; }
         if (array_key_exists('category_id', $data)) { $sets[] = 'category_id = ?'; $params[] = $data['category_id'] ?: null; }
         if (isset($data['description'])) { $sets[] = 'description = ?'; $params[] = $data['description']; }
+        if (array_key_exists('expiry_date', $data)) { $sets[] = 'expiry_date = ?'; $params[] = $data['expiry_date'] ?: null; }
         if (isset($data['is_active']))   { $sets[] = 'is_active = ?';   $params[] = (int)(bool)$data['is_active']; }
 
         if (empty($sets)) Response::error('Nothing to update', 400);

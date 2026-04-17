@@ -9,8 +9,8 @@ define('ATI_ENV', getenv('ATI_ENV') ?: 'development'); // production | developme
 define('DB_HOST',    '127.0.0.1');
 define('DB_PORT',    3306);
 define('DB_NAME',    'ati_db');
-define('DB_USER',    'root');
-define('DB_PASS',    '');
+define('DB_USER',    'ati_dev');
+define('DB_PASS',    'atiRestApiDev');
 define('DB_CHARSET', 'utf8mb4');
 
 // ── JWT ───────────────────────────────────────────────────────

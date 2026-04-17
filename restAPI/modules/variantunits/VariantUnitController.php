@@ -28,15 +28,19 @@ class VariantUnitController
     public static function store(Request $req): void
     {
         $variantId = (int)$req->params['variantId'];
-        if (!Database::fetchOne('SELECT id FROM product_variants WHERE id = ?', [$variantId])) {
+        $variant = Database::fetchOne('SELECT id, product_id FROM product_variants WHERE id = ?', [$variantId]);
+        if (!$variant) {
             Response::notFound('Variant not found');
         }
 
-        $data = $req->all();
+        $data = sanitiseInput($req->all());
         (new Validator())->validateOrFail($data, [
             'unit_id'        => 'required|integer',
             'unit_price'     => 'required|numeric|min:0',
             'stock_quantity' => 'nullable|numeric|min:0',
+            'lot_id'         => 'nullable|integer',
+            'lot_name'       => 'nullable|string|max:120',
+            'lot_description'=> 'nullable|string|max:255',
         ]);
 
         if (!Database::fetchOne('SELECT id FROM units WHERE id = ?', [$data['unit_id']])) {
@@ -51,13 +55,67 @@ class VariantUnitController
             Response::error('This unit is already linked to the variant', 409);
         }
 
-        Database::query(
-            'INSERT INTO variant_units (variant_id, unit_id, stock_quantity, unit_price)
-             VALUES (?, ?, ?, ?)',
-            [$variantId, $data['unit_id'], $data['stock_quantity'] ?? 0, $data['unit_price']]
-        );
+        $stockQty = (float)($data['stock_quantity'] ?? 0);
 
-        Response::created(['id' => (int)Database::lastInsertId()], 'Variant-unit created');
+        Database::beginTransaction();
+        try {
+            Database::query(
+                'INSERT INTO variant_units (variant_id, unit_id, stock_quantity, unit_price)
+                 VALUES (?, ?, ?, ?)',
+                [$variantId, $data['unit_id'], $stockQty, $data['unit_price']]
+            );
+            $vuId = (int)Database::lastInsertId();
+
+            if ($stockQty > 0 && (isset($data['lot_id']) || !empty($data['lot_name']))) {
+                $lotId = null;
+
+                if (isset($data['lot_id'])) {
+                    $lot = Database::fetchOne(
+                        'SELECT id, product_id, is_active FROM lots WHERE id = ?',
+                        [(int)$data['lot_id']]
+                    );
+                    if (!$lot || (int)$lot['product_id'] !== (int)$variant['product_id'] || !(bool)$lot['is_active']) {
+                        Response::error('lot_id is invalid for this product', 422);
+                    }
+                    $lotId = (int)$lot['id'];
+                } else {
+                    if (Database::fetchScalar(
+                        'SELECT COUNT(*) FROM lots WHERE product_id = ? AND name = ?',
+                        [(int)$variant['product_id'], $data['lot_name']]
+                    )) {
+                        Response::error('lot_name already exists for this product', 409);
+                    }
+                    Database::query(
+                        'INSERT INTO lots (product_id, name, description, created_by) VALUES (?, ?, ?, ?)',
+                        [(int)$variant['product_id'], $data['lot_name'], $data['lot_description'] ?? null, (int)$req->user['sub']]
+                    );
+                    $lotId = (int)Database::lastInsertId();
+                }
+
+                $existing = Database::fetchOne(
+                    'SELECT id FROM lot_stocks WHERE lot_id = ? AND variant_unit_id = ?',
+                    [$lotId, $vuId]
+                );
+                if ($existing) {
+                    Database::query(
+                        'UPDATE lot_stocks SET quantity_total = quantity_total + ? WHERE id = ?',
+                        [$stockQty, (int)$existing['id']]
+                    );
+                } else {
+                    Database::query(
+                        'INSERT INTO lot_stocks (lot_id, variant_unit_id, quantity_total, quantity_sold)
+                         VALUES (?, ?, ?, 0)',
+                        [$lotId, $vuId, $stockQty]
+                    );
+                }
+            }
+
+            Database::commit();
+            Response::created(['id' => $vuId], 'Variant-unit created');
+        } catch (Throwable $e) {
+            Database::rollback();
+            throw $e;
+        }
     }
 
     /** GET /variant-units/{id} */

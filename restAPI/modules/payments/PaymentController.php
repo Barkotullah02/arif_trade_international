@@ -112,6 +112,79 @@ class PaymentController
         ], 'Payment recorded');
     }
 
+    /** PUT /payments/{id} */
+    public static function update(Request $req): void
+    {
+        $paymentId = (int)$req->params['id'];
+        $payment = Database::fetchOne(
+            'SELECT id, invoice_id, amount_paid FROM payments WHERE id = ?',
+            [$paymentId]
+        );
+        if (!$payment) {
+            Response::notFound('Payment not found');
+        }
+
+        $invoice = Database::fetchOne(
+            'SELECT id, total_amount, status FROM sales_invoices WHERE id = ?',
+            [$payment['invoice_id']]
+        );
+        if (!$invoice) {
+            Response::notFound('Invoice not found');
+        }
+        if ($invoice['status'] !== 'active') {
+            Response::error("Cannot update payment for a {$invoice['status']} invoice", 409);
+        }
+
+        $data = sanitiseInput($req->all());
+        (new Validator())->validateOrFail($data, [
+            'amount_paid'  => 'nullable|numeric|min:0.01',
+            'payment_date' => 'nullable|date',
+            'method'       => 'nullable|string|max:50',
+            'reference'    => 'nullable|string|max:100',
+            'note'         => 'nullable|string',
+        ]);
+
+        $sets = [];
+        $params = [];
+
+        if (array_key_exists('amount_paid', $data)) {
+            $othersPaid = (float)Database::fetchScalar(
+                'SELECT COALESCE(SUM(amount_paid), 0) FROM payments WHERE invoice_id = ? AND id <> ?',
+                [$invoice['id'], $paymentId]
+            );
+            $nextTotalPaid = $othersPaid + (float)$data['amount_paid'];
+            if ($nextTotalPaid > (float)$invoice['total_amount'] + 0.001) {
+                Response::error('Payment update exceeds invoice total', 422);
+            }
+            $sets[] = 'amount_paid = ?';
+            $params[] = $data['amount_paid'];
+        }
+
+        if (array_key_exists('payment_date', $data)) { $sets[] = 'payment_date = ?'; $params[] = $data['payment_date']; }
+        if (array_key_exists('method', $data)) { $sets[] = 'method = ?'; $params[] = $data['method']; }
+        if (array_key_exists('reference', $data)) { $sets[] = 'reference = ?'; $params[] = $data['reference']; }
+        if (array_key_exists('note', $data)) { $sets[] = 'note = ?'; $params[] = $data['note']; }
+
+        if (empty($sets)) {
+            Response::error('Nothing to update', 400);
+        }
+
+        $params[] = $paymentId;
+        Database::query('UPDATE payments SET ' . implode(', ', $sets) . ' WHERE id = ?', $params);
+
+        $newPaid = (float)Database::fetchScalar(
+            'SELECT COALESCE(SUM(amount_paid), 0) FROM payments WHERE invoice_id = ?',
+            [$invoice['id']]
+        );
+
+        Response::success([
+            'id'         => $paymentId,
+            'invoice_id' => (int)$invoice['id'],
+            'total_paid' => round($newPaid, 2),
+            'due'        => round((float)$invoice['total_amount'] - $newPaid, 2),
+        ], 'Payment updated');
+    }
+
     /**
      * DELETE /payments/{id}  (superadmin only – enforced by route middleware)
      */
